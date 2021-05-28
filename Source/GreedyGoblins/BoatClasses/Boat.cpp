@@ -57,6 +57,12 @@ void ABoat::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis("MoveForward", this, &ABoat::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABoat::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this,  &ABoat::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &ABoat::LookRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &ABoat::LookUpRate);
+	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ABoat::LookRightRate);
+
+	
 }
 
 void ABoat::MoveForward(float Value)
@@ -71,4 +77,26 @@ void ABoat::MoveRight(float Value)
 	MovementComponent->SetSteeringThrow(Value);
 }
 
+void ABoat::LookUp(float AxisValue)
+{
+	AddControllerPitchInput(AxisValue);
+}
 
+void ABoat::LookRight(float AxisValue)
+{
+	AddControllerYawInput(AxisValue);
+}
+
+void ABoat::LookUpRate(float AxisValue)
+{
+	if(FMath::Abs(AxisValue) < KINDA_SMALL_NUMBER)
+	{
+		
+	}
+	AddControllerPitchInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds()); 
+}
+
+void ABoat::LookRightRate(float AxisValue)
+{
+	AddControllerYawInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds()); 
+}

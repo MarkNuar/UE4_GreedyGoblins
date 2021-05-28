@@ -38,4 +38,12 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+	void LookUp(float Value);
+	void LookRight(float Value);
+	void LookUpRate(float Value);
+	void LookRightRate(float Value);
+	
+	UPROPERTY(EditAnywhere)
+	float RotationRate = 10;
+
 };
