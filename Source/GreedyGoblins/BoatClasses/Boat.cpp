@@ -89,10 +89,6 @@ void ABoat::LookRight(float AxisValue)
 
 void ABoat::LookUpRate(float AxisValue)
 {
-	if(FMath::Abs(AxisValue) < KINDA_SMALL_NUMBER)
-	{
-		
-	}
 	AddControllerPitchInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds()); 
 }
 
