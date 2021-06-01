@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "GameFramework/Pawn.h"
 #include "LightHouse.generated.h"
@@ -39,6 +39,6 @@ public:
 	USpotLightComponent* SpotLightComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	USphereComponent* PatrolTargetComponent;
+	UCapsuleComponent* PatrolTargetComponent;
 
 };

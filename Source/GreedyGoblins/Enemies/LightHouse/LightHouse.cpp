@@ -18,7 +18,7 @@ ALightHouse::ALightHouse()
 	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
 	SpotLightComponent->SetupAttachment(StaticMeshComponent);
 	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
-	PatrolTargetComponent = CreateDefaultSubobject<USphereComponent>(TEXT("PatrolTargetComponent"));
+	PatrolTargetComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PatrolTargetComponent"));
 	PatrolTargetComponent->SetupAttachment(RootComponent);
 	if(!ensure(PatrolTargetComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetComponent->GetName());
 }
