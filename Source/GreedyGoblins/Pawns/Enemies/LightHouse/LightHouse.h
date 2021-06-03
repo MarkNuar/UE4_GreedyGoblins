@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 
 #include "Components/CapsuleComponent.h"
+#include "Components/SplineComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Pawn.h"
 #include "LightHouse.generated.h"
 
@@ -21,6 +23,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	float TimeInterp(float DeltaTime);
 
 public:	
 	// Called every frame
@@ -29,6 +32,14 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+private:
+
+	float AlphaMovement = 0.0f;
+	bool bIsAlphaIncreasing = true;
+
+	UPROPERTY(EditAnywhere)
+	float LightSpeed = 0.1f;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Root;
 	
@@ -41,4 +52,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UCapsuleComponent* PatrolTargetComponent;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USplineComponent* SplineComponent;
 };
