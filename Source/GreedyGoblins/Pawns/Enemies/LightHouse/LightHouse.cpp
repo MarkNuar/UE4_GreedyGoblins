@@ -36,19 +36,30 @@ void ALightHouse::BeginPlay()
 }
 
 float ALightHouse::TimeInterp(float DeltaTime){
-	
-	if(bIsAlphaIncreasing){
-		AlphaMovement += LightSpeed*DeltaTime;
-		if(AlphaMovement>=1-KINDA_SMALL_NUMBER){
-			bIsAlphaIncreasing = false;
+	if(!SplineComponent->IsClosedLoop())
+	{
+		if(bIsAlphaIncreasing){
+			AlphaMovement += LightSpeed*DeltaTime;
+			if(AlphaMovement>=1-KINDA_SMALL_NUMBER){
+				bIsAlphaIncreasing = false;
+			}
+		}else{
+			AlphaMovement -= LightSpeed*DeltaTime;
+			if(AlphaMovement<=KINDA_SMALL_NUMBER){
+				bIsAlphaIncreasing = true;
+			}
 		}
-	}else{
-		AlphaMovement -= LightSpeed*DeltaTime;
-		if(AlphaMovement<=KINDA_SMALL_NUMBER){
-			bIsAlphaIncreasing = true;
+	}
+	else
+	{
+		AlphaMovement += LightSpeed*DeltaTime;
+		if(AlphaMovement>=1)
+		{
+			AlphaMovement = 0.0f;
 		}
 	}
 	return AlphaMovement;
+
 }
 
 // Called every frame
