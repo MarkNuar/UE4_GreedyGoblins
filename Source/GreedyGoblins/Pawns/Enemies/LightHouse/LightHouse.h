@@ -37,8 +37,11 @@ private:
 	float AlphaMovement = 0.0f;
 	bool bIsAlphaIncreasing = true;
 
+	// Light speed in m/s
 	UPROPERTY(EditAnywhere)
-	float LightSpeed = 0.1f;
+	float LightSpeed = 5.0f;
+
+	float InterpStep;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Root;
