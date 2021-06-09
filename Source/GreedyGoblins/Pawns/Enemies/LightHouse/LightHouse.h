@@ -32,16 +32,26 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-private:
+	UCapsuleComponent* GetPatrolTargetComponent() const
+	{
+		return PatrolTargetComponent;
+	}
 
-	float AlphaMovement = 0.0f;
-	bool bIsAlphaIncreasing = true;
+	USplineComponent* GetSplineComponent() const
+	{
+		return SplineComponent;
+	}
+
+	float GetLightSpeed() const
+	{
+		return LightSpeed;
+	}
+
+private:
 
 	// Light speed in m/s
 	UPROPERTY(EditAnywhere)
 	float LightSpeed = 5.0f;
-
-	float InterpStep;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Root;

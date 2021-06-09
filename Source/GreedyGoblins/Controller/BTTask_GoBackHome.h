@@ -6,19 +6,19 @@
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "GreedyGoblins/Pawns/Enemies/LightHouse/LightHouse.h"
 
-#include "BTTask_FollowSpline.generated.h"
+#include "BTTask_GoBackHome.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class GREEDYGOBLINS_API UBTTask_FollowSpline : public UBTTask_BlackboardBase
+class GREEDYGOBLINS_API UBTTask_GoBackHome : public UBTTask_BlackboardBase
 {
 	GENERATED_BODY()
 
 public:
-	UBTTask_FollowSpline();
-	
+	UBTTask_GoBackHome();
+
 protected:
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
@@ -26,19 +26,16 @@ protected:
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 private:
-	float InterpStep;
-
-	float TimeInterp(float DeltaTime);
-
-	float AlphaMovement = 0.0f;
-	bool bIsAlphaIncreasing = true;
-
-	UPROPERTY()
-	ALightHouse* LightHouse;
+	FVector HomeSplinePosition;
 
 	UPROPERTY()
 	UCapsuleComponent* PatrolTargetComponent;
 
+	float LerpStep;
+	float LerpRatio = 0.f;
+	
 	UPROPERTY()
-	USplineComponent* SplineComponent;
+	ALightHouse* LightHouse; 
 };
+
+

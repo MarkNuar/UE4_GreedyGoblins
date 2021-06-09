@@ -30,43 +30,8 @@ ALightHouse::ALightHouse()
 void ALightHouse::BeginPlay()
 {
 	Super::BeginPlay();
-	if(!ensure(PatrolTargetComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetComponent->GetName());
-	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
-	PatrolTargetComponent->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::World));
-
-	float Time = SplineComponent->GetSplineLength() / (LightSpeed * 100.0f);
-
-	InterpStep = 1 / Time;
-
-	UE_LOG(LogTemp, Warning, TEXT("%f not found"), SplineComponent->GetSplineLength());
 }
 
-float ALightHouse::TimeInterp(float DeltaTime){
-	if(!SplineComponent->IsClosedLoop())
-	{
-		if(bIsAlphaIncreasing){
-			AlphaMovement += InterpStep*DeltaTime;
-			if(AlphaMovement>=1-KINDA_SMALL_NUMBER){
-				bIsAlphaIncreasing = false;
-			}
-		}else{
-			AlphaMovement -= InterpStep*DeltaTime;
-			if(AlphaMovement<=KINDA_SMALL_NUMBER){
-				bIsAlphaIncreasing = true;
-			}
-		}
-	}
-	else
-	{
-		AlphaMovement += InterpStep*DeltaTime;
-		if(AlphaMovement>=1)
-		{
-			AlphaMovement-= 1.0f;
-		}
-	}
-	return AlphaMovement;
-
-}
 
 // Called every frame
 void ALightHouse::Tick(float DeltaTime)
@@ -77,13 +42,6 @@ void ALightHouse::Tick(float DeltaTime)
 	const FRotator Rotation = Direction.Rotation();
 	SpotLightComponent->SetWorldRotation(Rotation);
 	
-	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
-	if(!ensure(PatrolTargetComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetComponent->GetName());
-	
-	float InterpPosition = TimeInterp(DeltaTime);
-	PatrolTargetComponent->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(
-		InterpPosition*SplineComponent->GetSplineLength(), ESplineCoordinateSpace::World
-		));
 }
 
 // Called to bind functionality to input
