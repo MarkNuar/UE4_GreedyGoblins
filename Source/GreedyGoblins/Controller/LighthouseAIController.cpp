@@ -11,8 +11,7 @@
 void ALighthouseAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UBTTask_MoveTo Move;
+	
 	if(AIBehavior != nullptr)
 	{
 		RunBehaviorTree(AIBehavior);
