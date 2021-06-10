@@ -29,6 +29,16 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	bool HasSailKey() const
+	{
+		return bHasSailKey;
+	}
+
+	void SetHasSailKey(bool HasSailKey)
+	{
+		this->bHasSailKey = HasSailKey;
+	}
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoatMovementComponent* MovementComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -45,5 +55,8 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	
 	UPROPERTY(EditAnywhere)
 	float RotationRate = 10;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bHasSailKey = false;
 
 };
