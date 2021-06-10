@@ -13,7 +13,6 @@ ASailKey::ASailKey()
 
 	TriggerVolume = CreateDefaultSubobject<UBoxComponent>(FName("TriggerVolume"));
 	if (!ensure(TriggerVolume != nullptr)) return;
-
 	SailMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("SailMesh"));
 	if (!ensure(SailMesh != nullptr)) return;
 	
@@ -40,5 +39,10 @@ void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 {	
 	ABoat* BoatWithSailKey = Cast<ABoat>(OtherActor);
 	BoatWithSailKey->SetHasSailKey(true);
+	
+	if(PearlOfDestiny == nullptr) return;
+	UStaticMeshComponent* ShieldMesh = PearlOfDestiny->GetShieldMesh();
+	if(ShieldMesh == nullptr) return;
+	ShieldMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	this->Destroy();
 }

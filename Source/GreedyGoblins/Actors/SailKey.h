@@ -34,7 +34,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* SailMesh;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	APearlOfDestiny* PearlOfDestiny;
 
 	UFUNCTION()

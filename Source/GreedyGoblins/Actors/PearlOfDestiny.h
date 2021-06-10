@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "PearlOfDestiny.generated.h"
 
@@ -23,4 +25,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+private:
+	
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ShieldMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	UBoxComponent* PearlTrigger;
+	
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* PearlMesh;
+
+public:
+	UStaticMeshComponent* GetShieldMesh() const
+	{
+		return ShieldMesh;
+	}
+
+private:
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
