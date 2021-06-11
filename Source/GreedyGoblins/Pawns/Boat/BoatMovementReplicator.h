@@ -73,7 +73,7 @@ private:
 	float VelocityToDerivative();
 	
 	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_SendMove(FBoatMove Move);
+	void Server_SendMove(FBoatMove Move); // executed only on server so only the server can validate the move of the client (Client sends move to server)
 
 	UPROPERTY(ReplicatedUsing= OnRep_ServerState)
 	FBoatState ServerState;

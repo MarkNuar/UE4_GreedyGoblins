@@ -85,6 +85,9 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	float Throttle;
 	float SteeringThrow;
 
+	UPROPERTY(VisibleAnywhere)
+	float Speed;
+
 	FBoatMove LastMove;
 
 };

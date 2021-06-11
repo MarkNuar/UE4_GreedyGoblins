@@ -34,10 +34,9 @@ void UBoatMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
 	}
-	
 }
 
-void UBoatMovementComponent::SimulateMove(const FBoatMove& Move)
+void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server simulates the moves of the other clients 
 {
 	FVector Force = GetOwner()->GetActorForwardVector() * MaxDrivingForce * Move.Throttle;
 
@@ -47,7 +46,8 @@ void UBoatMovementComponent::SimulateMove(const FBoatMove& Move)
 	FVector Acceleration = Force / Mass;
 	
 	Velocity = Velocity + Acceleration * Move.DeltaTime;
-
+	Speed = Velocity.Size();
+	
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
 	UpdateLocationFromVelocity(Move.DeltaTime);
 	

@@ -49,6 +49,8 @@ void ABoat::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
+
+	UE_LOG(LogTemp, Warning, TEXT("%f"), MovementComponent->GetVelocity().Size());
 }
 
 // Called to bind functionality to input

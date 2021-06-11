@@ -37,13 +37,13 @@ void UBoatMovementReplicator::TickComponent(float DeltaTime, ELevelTick TickType
 	if (GetOwnerRole() == ROLE_AutonomousProxy)
 	{
 		UnacknowledgedMoves.Add(LastMove);
-		Server_SendMove(LastMove);
+		Server_SendMove(LastMove); // I (client) send my move to the server, THE SERVER EXECUTES IT, and then the server updates its state regarding the client
 	}
 
 	// we are the server and in control of the pawn
 	if(GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
-		UpdateServerState(LastMove);
+		UpdateServerState(LastMove); // updates the server on the last move of the client
 	}
 
 	// we are the server seen by the client
@@ -53,14 +53,14 @@ void UBoatMovementReplicator::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 }
 
-void UBoatMovementReplicator::UpdateServerState(const FBoatMove& Move)
+void UBoatMovementReplicator::UpdateServerState(const FBoatMove& Move) //
 {
 	ServerState.LastMove = Move;
 	ServerState.Transform = GetOwner()->GetActorTransform();
 	ServerState.Velocity = MovementComponent->GetVelocity();
 }
 
-void UBoatMovementReplicator::ClientTick(float DeltaTime) //in order to see correctly the server from the client POV (simulated proxy)
+void UBoatMovementReplicator::ClientTick(float DeltaTime) //in order to correctly see the server from the client POV (simulated proxy)
 {
 	ClientTimeSinceUpdate += DeltaTime;
 
@@ -125,7 +125,7 @@ void UBoatMovementReplicator::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	DOREPLIFETIME(UBoatMovementReplicator, ServerState);
 }
 
-void UBoatMovementReplicator::OnRep_ServerState() // called every "NetUpdateFrequency" seconds, in order to replicate the server state to client
+void UBoatMovementReplicator::OnRep_ServerState() // called every "NetUpdateFrequency" seconds, after the server replicated the state to everybody
 {
 	switch (GetOwnerRole())
 	{
@@ -140,11 +140,11 @@ void UBoatMovementReplicator::OnRep_ServerState() // called every "NetUpdateFreq
 	}
 }
 
-void UBoatMovementReplicator::AutonomousProxy_OnRep_ServerState() // after replication from server
+void UBoatMovementReplicator::AutonomousProxy_OnRep_ServerState() // after server replicated serverstate to everybody (if i'm a client)
 {
 	if (MovementComponent == nullptr) return;
 	
-	GetOwner()->SetActorTransform(ServerState.Transform);
+	GetOwner()->SetActorTransform(ServerState.Transform); //client sets its move after server validated it, taking it from the serverstate struct
 	MovementComponent->SetVelocity(ServerState.Velocity);
 
 	ClearAcknowledgeMoves(ServerState.LastMove);
@@ -155,7 +155,7 @@ void UBoatMovementReplicator::AutonomousProxy_OnRep_ServerState() // after repli
 	}
 }
 
-void UBoatMovementReplicator::SimulatedProxy_OnRep_ServerState() // after replication from server
+void UBoatMovementReplicator::SimulatedProxy_OnRep_ServerState() // after server replicated serverstate to everybody (if i'm a client seen from another client's POV)
 {
 	if (MovementComponent == nullptr) return;
 	
@@ -169,7 +169,7 @@ void UBoatMovementReplicator::SimulatedProxy_OnRep_ServerState() // after replic
 	}
 	ClientStartVelocity = MovementComponent->GetVelocity();
 
-	GetOwner()->SetActorTransform(ServerState.Transform);
+	GetOwner()->SetActorTransform(ServerState.Transform); //client sets its move after server validated it, taking it from the serverstate struct
 }
 
 void UBoatMovementReplicator::ClearAcknowledgeMoves(FBoatMove LastMove)
@@ -186,7 +186,7 @@ void UBoatMovementReplicator::ClearAcknowledgeMoves(FBoatMove LastMove)
 }
 
 
-void UBoatMovementReplicator::Server_SendMove_Implementation(FBoatMove Move) // Update ServerState so all the simulated proxies (seen by the clients) are moving correctly (called ONLY ON THE SERVER)
+void UBoatMovementReplicator::Server_SendMove_Implementation(FBoatMove Move) // I (client) send my move to the server, THE SERVER EXECUTES IT, and then the server updates its state regarding the client
 {
 	if (MovementComponent == nullptr) return;
 
