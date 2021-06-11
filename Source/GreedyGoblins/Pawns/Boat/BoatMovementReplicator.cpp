@@ -203,13 +203,13 @@ bool UBoatMovementReplicator::Server_SendMove_Validate(FBoatMove Move)
 	if(!ClientNotRunningAhead)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Client is running too fast."));
-		return false;
+		return false; // This will disconnect the caller
 	}
 	
 	if(!Move.isValid())
 	{
 		UE_LOG(LogTemp, Error, TEXT("Received invalid move"));
-		return false;
+		return false; // This will disconnect the caller
 	}
 	
 	return true;

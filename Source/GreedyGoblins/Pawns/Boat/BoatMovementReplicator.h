@@ -72,10 +72,10 @@ private:
 
 	float VelocityToDerivative();
 	
-	UFUNCTION(Server, Reliable, WithValidation)
-	void Server_SendMove(FBoatMove Move); // executed only on server so only the server can validate the move of the client (Client sends move to server)
+	UFUNCTION(Server, Reliable, WithValidation) // RPC client to server call
+	void Server_SendMove(FBoatMove Move); // Client sends move to server: EXECUTED ONLY ON SERVER so only the server can validate the move of the client
 
-	UPROPERTY(ReplicatedUsing= OnRep_ServerState)
+	UPROPERTY(ReplicatedUsing= OnRep_ServerState) //OnRep_Serverstate is a callback function called only AFTER ServerState has been replicated
 	FBoatState ServerState;
 	
 	UFUNCTION()
