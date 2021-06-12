@@ -3,6 +3,7 @@
 
 #include "SailKey.h"
 
+#include "GreedyGoblins/GreedyGoblinsGameState.h"
 #include "GreedyGoblins/Pawns/Boat/Boat.h"
 
 // Sets default values
@@ -38,11 +39,22 @@ void ASailKey::Tick(float DeltaTime)
 void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
 	ABoat* BoatWithSailKey = Cast<ABoat>(OtherActor);
-	BoatWithSailKey->SetHasSailKey(true);
+	if (!ensure(BoatWithSailKey != nullptr)) return;
+	APlayerState* PlayerStateWithSailKey = BoatWithSailKey->GetPlayerState();
+	if (!ensure(PlayerStateWithSailKey != nullptr)) return;
+	AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
+	GreedyGoblinsGameState->SetPlayerWithSailKey(PlayerStateWithSailKey);
+
 	
+	//TODO fix collision channel
+	/*
 	if(PearlOfDestiny == nullptr) return;
 	UStaticMeshComponent* ShieldMesh = PearlOfDestiny->GetShieldMesh();
 	if(ShieldMesh == nullptr) return;
 	ShieldMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	*/
+
 	this->Destroy();
+	
 }

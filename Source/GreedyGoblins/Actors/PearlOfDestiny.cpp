@@ -39,6 +39,6 @@ void APearlOfDestiny::Tick(float DeltaTime)
 
 void APearlOfDestiny::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
-	// CALL END GAME
+	//TODO CALL END GAME
 }
 

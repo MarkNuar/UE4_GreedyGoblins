@@ -82,7 +82,9 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	float RollingResistanceCoefficient = 0.015;
 
 	FVector Velocity;
-	float Throttle;
+
+	UPROPERTY(VisibleAnywhere)
+	float Throttle; // Value between -1 and 1 INTEGER
 	float SteeringThrow;
 
 	UPROPERTY(VisibleAnywhere)
