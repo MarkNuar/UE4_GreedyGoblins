@@ -21,8 +21,6 @@ void UBoatMovementComponent::BeginPlay()
 
 	// ...
 
-
-	//todo
 	Velocity = FVector::ZeroVector;
 }
 
@@ -41,9 +39,22 @@ void UBoatMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server simulates the moves of the other clients 
 {
+
+	if(abs(Move.Throttle) < SMALL_NUMBER && Velocity.Size() > 0)
+	{
+		FVector PrevVel = Velocity;
+		Velocity = Velocity - FMath::Sign(FVector::DotProduct(GetOwner()->GetActorForwardVector(), Velocity)) * GetOwner()->GetActorForwardVector() * Deceleration * Move.DeltaTime;
+		
+		if (FVector::DotProduct(PrevVel,Velocity) < 0)
+			Velocity = FVector::ZeroVector;
+	}
+	else
+	{
+		Velocity = Velocity + GetOwner()->GetActorForwardVector() * Move.Throttle * Acceleration * Move.DeltaTime;
+	}
 	
-	Velocity = Velocity + GetOwner()->GetActorForwardVector() * Move.Throttle * Acceleration * Move.DeltaTime;
-	Velocity = Velocity.GetClampedToMaxSize(MaxBaseSpeed); 
+	Velocity = Velocity.GetClampedToMaxSize(MaxBaseSpeed);
+	
 	Speed = Velocity.Size();
 	
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);

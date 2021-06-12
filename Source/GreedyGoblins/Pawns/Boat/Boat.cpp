@@ -21,9 +21,11 @@ void ABoat::BeginPlay()
 {
 	Super::BeginPlay();
 	SetReplicateMovement(false);
-	
-	if (HasAuthority())
-		NetUpdateFrequency = 1;
+
+	if(HasAuthority())
+	{
+		NetUpdateFrequency = 100;
+	}
 }
 
 FString GetEnumText (ENetRole Role)

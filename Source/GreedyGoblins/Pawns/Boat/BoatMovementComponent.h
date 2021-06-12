@@ -62,6 +62,9 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 
 	UPROPERTY(EditAnywhere)
 	float Acceleration = 5;
+
+	UPROPERTY(EditAnywhere)
+	float Deceleration = 5;
 	
 	//Max  Speed in m/s
 	UPROPERTY(EditAnywhere)

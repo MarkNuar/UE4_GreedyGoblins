@@ -46,7 +46,7 @@ void UBoatMovementReplicator::TickComponent(float DeltaTime, ELevelTick TickType
 		UpdateServerState(LastMove); // updates the server on the last move of the client
 	}
 
-	// we are the server seen by the client
+	// we are somebody else seen by the client (i.e the server or other clients)
 	if(GetOwnerRole() == ROLE_SimulatedProxy)
 	{
 		ClientTick(DeltaTime);
@@ -64,7 +64,6 @@ void UBoatMovementReplicator::ClientTick(float DeltaTime) //in order to correctl
 {
 	ClientTimeSinceUpdate += DeltaTime;
 
-	if (ClientTimeBetweenLastUpdates < KINDA_SMALL_NUMBER) return;
 	if (MovementComponent == nullptr) return;
 
 	float LerpRatio = ClientTimeSinceUpdate / ClientTimeBetweenLastUpdates;
