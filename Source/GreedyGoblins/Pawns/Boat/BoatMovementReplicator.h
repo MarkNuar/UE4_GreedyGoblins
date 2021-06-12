@@ -8,6 +8,11 @@
 #include "Components/ActorComponent.h"
 #include "BoatMovementReplicator.generated.h"
 
+// The full game (classes, variable status and game state) exists on both Server and Client, but replication is needed in order to propagate variable changes
+// to the games (classes, variable status and game state) of other clients
+
+// When HasAuthority() is called, we ensure that only the server can/will execute that block of code (for himself AND the clients),
+// in order to prevent the clients from cheating 
 
 USTRUCT()
 struct FBoatState
