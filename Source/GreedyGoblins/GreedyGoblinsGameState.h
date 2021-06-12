@@ -16,6 +16,8 @@ class GREEDYGOBLINS_API AGreedyGoblinsGameState : public AGameStateBase
 
 
 private:
+	
+	UPROPERTY(Replicated)
 	bool EnragedMode = false;
 
 	UPROPERTY()
@@ -28,5 +30,5 @@ public:
 		return EnragedMode;
 	}
 
-	void SetPlayerWithSailKey(APlayerState* PlayerWithSailKeyParam);
+	void UpdateSailKeyOwner(APlayerState* PlayerWithSailKeyParam);
 };

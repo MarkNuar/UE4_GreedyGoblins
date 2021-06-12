@@ -18,8 +18,11 @@ ASailKey::ASailKey()
 	if (!ensure(SailMesh != nullptr)) return;
 	
     SailMesh->SetupAttachment(TriggerVolume);
-	
-	TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &ASailKey::OnOverlapBegin);
+
+	if(HasAuthority())
+	{
+		TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &ASailKey::OnOverlapBegin);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -40,14 +43,18 @@ void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 {	
 	ABoat* BoatWithSailKey = Cast<ABoat>(OtherActor);
 	if (!ensure(BoatWithSailKey != nullptr)) return;
+	
 	APlayerState* PlayerStateWithSailKey = BoatWithSailKey->GetPlayerState();
 	if (!ensure(PlayerStateWithSailKey != nullptr)) return;
+	
 	AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
 	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
-	GreedyGoblinsGameState->SetPlayerWithSailKey(PlayerStateWithSailKey);
+	
+	GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerStateWithSailKey);
 
 	
 	//TODO fix collision channel
+	
 	/*
 	if(PearlOfDestiny == nullptr) return;
 	UStaticMeshComponent* ShieldMesh = PearlOfDestiny->GetShieldMesh();

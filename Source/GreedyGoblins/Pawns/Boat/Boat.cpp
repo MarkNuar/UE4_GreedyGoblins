@@ -4,6 +4,7 @@
 #include "Boat.h"
 
 #include "DrawDebugHelpers.h"
+#include "GreedyGoblins/GreedyGoblinsGameState.h"
 
 // Sets default values
 ABoat::ABoat()
@@ -52,6 +53,12 @@ void ABoat::Tick(float DeltaTime)
 	
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
 
+	AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
+	
+	if(GreedyGoblinsGameState->GetEnragedMode())
+		DrawDebugString(GetWorld(), FVector(0, 0, 50), "Sail key presa!", this, FColor::White, DeltaTime);
+	
 }
 
 // Called to bind functionality to input

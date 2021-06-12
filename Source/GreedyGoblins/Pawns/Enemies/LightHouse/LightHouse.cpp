@@ -3,6 +3,9 @@
 
 #include "LightHouse.h"
 
+#include "Components/SphereComponent.h"
+#include "GreedyGoblins/Pawns/Boat/Boat.h"
+
 // Sets default values
 ALightHouse::ALightHouse()
 {
@@ -24,6 +27,11 @@ ALightHouse::ALightHouse()
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
 	SplineComponent->SetupAttachment(RootComponent);
+
+	//TODO If Has authority
+	PatrolTargetComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
+	PatrolTargetComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);
+
 }
 
 // Called when the game starts or when spawned
@@ -50,4 +58,37 @@ void ALightHouse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
+void ALightHouse::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(!ensure(OtherActor)) return;
+	if(!ensure(OtherComp)) return;
+	
+	if(Cast<USphereComponent>(OtherComp) && BoatToChase == nullptr)
+	{
+		if(!ensure(Cast<ABoat>(OtherActor))) return;
+		BoatToChase = Cast<ABoat>(OtherActor);
+	}
+		
+}
+
+void ALightHouse::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(!ensure(OtherActor)) return;
+	if(!ensure(OtherComp)) return;
+
+	if(Cast<USphereComponent>(OtherComp))
+	{
+		ABoat* OtherBoat = Cast<ABoat>(OtherActor);
+		if(!ensure(OtherBoat)) return;
+		
+		if(BoatToChase == OtherBoat)
+		{
+			BoatToChase = nullptr;
+		}
+	}
+
+}
+
+
 

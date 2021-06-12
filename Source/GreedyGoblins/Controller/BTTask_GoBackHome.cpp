@@ -9,7 +9,6 @@
 UBTTask_GoBackHome::UBTTask_GoBackHome()
 {
 	NodeName = TEXT("Go Back Home");
-
 	bNotifyTick = true;
 }
 
@@ -25,7 +24,7 @@ EBTNodeResult::Type UBTTask_GoBackHome::ExecuteTask(UBehaviorTreeComponent& Owne
 	float Distance = (PatrolTargetComponent->GetComponentLocation() - HomeSplinePosition).Size();
 	float Time =  Distance / (LightHouse->GetLightSpeed() * 100.0f);
 	LerpStep = 1 / Time;
-
+	LerpRatio = 0.0f;
 	
 	HomeSplinePosition = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
 	return EBTNodeResult::InProgress;

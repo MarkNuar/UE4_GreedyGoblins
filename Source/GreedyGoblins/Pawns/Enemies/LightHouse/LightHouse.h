@@ -9,6 +9,8 @@
 #include "Components/SpotLightComponent.h"
 #include "Components/TimelineComponent.h"
 #include "GameFramework/Pawn.h"
+#include "GreedyGoblins/Pawns/Boat/Boat.h"
+
 #include "LightHouse.generated.h"
 
 UCLASS()
@@ -47,11 +49,19 @@ public:
 		return LightSpeed;
 	}
 
+	ABoat* GetBoatToChase() const
+	{
+		return BoatToChase;
+	}
+
 private:
 
 	// Light speed in m/s
 	UPROPERTY(EditAnywhere)
 	float LightSpeed = 5.0f;
+
+	UPROPERTY()
+	ABoat* BoatToChase;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* Root;
@@ -67,4 +77,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USplineComponent* SplineComponent;
+
+	UFUNCTION()
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
