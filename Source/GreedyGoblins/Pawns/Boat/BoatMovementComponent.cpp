@@ -20,7 +20,10 @@ void UBoatMovementComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-	
+
+
+	//todo
+	Velocity = FVector::ZeroVector;
 }
 
 
@@ -38,14 +41,9 @@ void UBoatMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server simulates the moves of the other clients 
 {
-	FVector Force = GetOwner()->GetActorForwardVector() * MaxDrivingForce * Move.Throttle;
-
-	Force += GetAirResistance();
-	Force += GetRollingResistance();
-
-	FVector Acceleration = Force / Mass;
 	
-	Velocity = Velocity + Acceleration * Move.DeltaTime;
+	Velocity = Velocity + GetOwner()->GetActorForwardVector() * Move.Throttle * Acceleration * Move.DeltaTime;
+	Velocity = Velocity.GetClampedToMaxSize(MaxBaseSpeed); 
 	Speed = Velocity.Size();
 	
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
@@ -63,19 +61,6 @@ FBoatMove UBoatMovementComponent::CreateMove(float DeltaTime)
 
 	return Move;
 }
-
-FVector UBoatMovementComponent::GetAirResistance()
-{
-	return -Velocity.GetSafeNormal() * Velocity.SizeSquared() * DragCoefficient;
-}
-
-FVector UBoatMovementComponent::GetRollingResistance()
-{
-	float AccelerationDueToGravity = -GetWorld()->GetGravityZ() / 100;
-	float NormalForce = Mass * AccelerationDueToGravity;
-	return - Velocity.GetSafeNormal() * RollingResistanceCoefficient * NormalForce;
-}
-
 
 void UBoatMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 {

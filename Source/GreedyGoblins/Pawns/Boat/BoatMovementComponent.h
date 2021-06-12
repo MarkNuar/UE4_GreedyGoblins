@@ -55,31 +55,21 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	FBoatMove GetLastMove() { return LastMove; }
 	
 	private:
-	FVector GetAirResistance();
-	FVector GetRollingResistance();
+
 	void ApplyRotation(float DeltaTime, float SteeringThrow);
 	void UpdateLocationFromVelocity(float DeltaTime);
 	FBoatMove CreateMove(float DeltaTime);
 
-	// the mass of the car
 	UPROPERTY(EditAnywhere)
-	float Mass = 1000;
-
-	// the force applied to the car when the throttle is fully down (N)
+	float Acceleration = 5;
+	
+	//Max  Speed in m/s
 	UPROPERTY(EditAnywhere)
-	float MaxDrivingForce = 10000;
+	float MaxBaseSpeed = 25;
 
 	// minimum radius of the car turning circle at full lock (m)
 	UPROPERTY(EditAnywhere)
 	float MinTurningRadius = 10;
-
-	// higher means more drag
-	UPROPERTY(EditAnywhere)
-	float DragCoefficient = 16;
-
-	// higher means more rolling resistance
-	UPROPERTY(EditAnywhere)
-	float RollingResistanceCoefficient = 0.015;
 
 	FVector Velocity;
 
