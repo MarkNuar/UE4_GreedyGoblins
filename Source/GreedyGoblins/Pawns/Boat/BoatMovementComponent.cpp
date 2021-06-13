@@ -46,7 +46,9 @@ void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server si
 		Velocity = Velocity - FMath::Sign(FVector::DotProduct(GetOwner()->GetActorForwardVector(), Velocity)) * GetOwner()->GetActorForwardVector() * Deceleration * Move.DeltaTime;
 		
 		if (FVector::DotProduct(PrevVel,Velocity) < 0)
+		{
 			Velocity = FVector::ZeroVector;
+		}
 	}
 	else
 	{
@@ -54,7 +56,6 @@ void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server si
 	}
 	
 	Velocity = Velocity.GetClampedToMaxSize(MaxBaseSpeed);
-	
 	Speed = Velocity.Size();
 	
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
@@ -81,7 +82,9 @@ void UBoatMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 	GetOwner()->AddActorWorldOffset(Translation, true, &HitResult);
 
 	if (HitResult.IsValidBlockingHit())
+	{
 		Velocity = FVector::ZeroVector;
+	}
 }
 
 void UBoatMovementComponent::ApplyRotation(float DeltaTime, float LocalSteeringThrow)

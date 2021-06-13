@@ -29,9 +29,13 @@ void UBTService_BoatLocationIfHeard::TickNode(UBehaviorTreeComponent& OwnerComp,
 	ABoat* BoatToChase = LightHouse->GetBoatToChase();
 	
 	if(BoatToChase != nullptr)
+	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), BoatToChase);
+	}
 	else
-		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey()); 
+	{
+		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
+	}
 	
 }
 
