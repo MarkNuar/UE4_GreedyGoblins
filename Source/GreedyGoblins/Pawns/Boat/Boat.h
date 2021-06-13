@@ -6,6 +6,7 @@
 
 #include "BoatMovementComponent.h"
 #include "BoatMovementReplicator.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Boat.generated.h"
 
@@ -33,6 +34,8 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	UBoatMovementComponent* MovementComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoatMovementReplicator* MovementReplicator;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UBoxComponent* BoxCollider;
 
 	private:	
 	void MoveForward(float Value);
@@ -46,4 +49,6 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	UPROPERTY(EditAnywhere)
 	float RotationRate = 10;
 
+	UFUNCTION()
+	void OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };

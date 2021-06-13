@@ -4,6 +4,7 @@
 #include "Boat.h"
 
 #include "DrawDebugHelpers.h"
+#include "Components/BoxComponent.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
 
 // Sets default values
@@ -15,17 +16,23 @@ ABoat::ABoat()
 	
 	MovementComponent = CreateDefaultSubobject<UBoatMovementComponent>(TEXT("MovementComponent"));
 	MovementReplicator = CreateDefaultSubobject<UBoatMovementReplicator>(TEXT("MovementReplicator"));
+	
 }
 
 // Called when the game starts or when spawned
 void ABoat::BeginPlay()
 {
 	Super::BeginPlay();
+
+	BoxCollider = FindComponentByClass<UBoxComponent>();
+	if(!ensure(BoxCollider != nullptr)) return;
+			
 	SetReplicateMovement(false);
 
 	if(HasAuthority()) // Executed only by the server (It's executed ON clients too, but not BY them: still by the server)
 	{
 		NetUpdateFrequency = 100;
+		BoxCollider->OnComponentHit.AddDynamic(this, &ABoat::OnBoatHit);
 	}
 }
 
@@ -56,8 +63,10 @@ void ABoat::Tick(float DeltaTime)
 	AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
 	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 	
-	if(GreedyGoblinsGameState->GetEnragedMode())
+	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
+	{
 		DrawDebugString(GetWorld(), FVector(0, 0, 50), "Sail key presa!", this, FColor::White, DeltaTime);
+	}
 	
 }
 
@@ -72,7 +81,6 @@ void ABoat::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &ABoat::LookUpRate);
 	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ABoat::LookRightRate);
 
-	
 }
 
 void ABoat::MoveForward(float Value)
@@ -106,3 +114,21 @@ void ABoat::LookRightRate(float AxisValue)
 {
 	AddControllerYawInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds()); 
 }
+
+void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if(OtherActor->GetClass() == this->StaticClass())
+	{
+		AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+		if (!ensure(GreedyGoblinsGameState != nullptr)) return;
+		
+		APawn* PlayerHitPawn = Cast<APawn>(OtherActor);
+		if (!ensure(PlayerHitPawn != nullptr)) return;
+		if(GreedyGoblinsGameState->HasSailKey(PlayerHitPawn->GetPlayerState()) && GreedyGoblinsGameState->GetCanGetSailKey())
+		{	
+			GreedyGoblinsGameState->UpdateSailKeyOwner(GetPlayerState());
+		}
+	}
+
+}
+

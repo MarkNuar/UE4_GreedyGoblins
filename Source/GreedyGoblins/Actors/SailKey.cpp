@@ -51,16 +51,7 @@ void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 	
 	GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerStateWithSailKey);
-
 	
-	//TODO fix collision channel
-	
-	/*
-	if(PearlOfDestiny == nullptr) return;
-	UStaticMeshComponent* ShieldMesh = PearlOfDestiny->GetShieldMesh();
-	if(ShieldMesh == nullptr) return;
-	ShieldMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	*/
 
 	this->Destroy();
 	
