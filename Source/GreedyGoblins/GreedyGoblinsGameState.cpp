@@ -27,7 +27,7 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKey
 	PlayerWithSailKey = PlayerWithSailKeyParam;
 	EnragedMode = true;
 	StartSailKeyHitDelay();
-	DisableShieldForSailKeyOwner();
+	UpdatePearlShield();
 
 	UE_LOG(LogTemp, Warning, TEXT("Player number %d stole the sail key"), PlayerWithSailKey->GetPlayerId());
 	
@@ -48,7 +48,7 @@ void AGreedyGoblinsGameState::StartSailKeyHitDelay()
 	}
 }
 
-void AGreedyGoblinsGameState::DisableShieldForSailKeyOwner()
+void AGreedyGoblinsGameState::UpdatePearlShield()
 {
 	ABoat* BoatWithSailKey = Cast<ABoat>(PlayerWithSailKey->GetPawn());
 	if(!ensure(BoatWithSailKey != nullptr)) return;

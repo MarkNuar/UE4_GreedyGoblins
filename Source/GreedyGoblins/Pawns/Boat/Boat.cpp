@@ -5,6 +5,7 @@
 
 #include "DrawDebugHelpers.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
 
 // Sets default values
@@ -60,14 +61,10 @@ void ABoat::Tick(float DeltaTime)
 	
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
 
-	AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
-	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
-	
-	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
+	if(GetPlayerState() != nullptr)
 	{
-		DrawDebugString(GetWorld(), FVector(0, 0, 50), "Sail key presa!", this, FColor::White, DeltaTime);
+		DrawDebugString(GetWorld(), FVector(0, 0, 20), "Player number " + FString::FromInt(GetPlayerState()->GetPlayerId()),this, FColor::White, DeltaTime);
 	}
-	
 }
 
 // Called to bind functionality to input

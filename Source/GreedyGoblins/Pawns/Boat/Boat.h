@@ -40,7 +40,6 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	private:	
 	void MoveForward(float Value);
 	void MoveRight(float Value);
-
 	void LookUp(float Value);
 	void LookRight(float Value);
 	void LookUpRate(float Value);

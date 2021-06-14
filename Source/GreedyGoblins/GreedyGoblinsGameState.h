@@ -51,6 +51,6 @@ private:
 
 	void StartSailKeyHitDelay();
 
-	void DisableShieldForSailKeyOwner();
+	void UpdatePearlShield();
 	
 };
