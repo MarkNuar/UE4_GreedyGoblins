@@ -84,6 +84,17 @@ void UBoatMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 	if (HitResult.IsValidBlockingHit())
 	{
 		Velocity = FVector::ZeroVector;
+		// TODO
+		// FVector OppositeNormal = HitResult.Normal;
+		//
+		// if (FVector::DotProduct(Velocity, OppositeNormal) / (Velocity.Size() * OppositeNormal.Size() < FMath::Sqrt(2)/2)) // angolo maggiore di 45 gradi 
+		// {
+		// 	
+		// }
+		// else
+		// {
+		// 	Velocity = FVector::VectorPlaneProject(HitResult.Normal * 10, FVector::ZAxisVector).ProjectOnTo(GetOwner()->GetActorForwardVector()); // bouncyness
+		// }
 	}
 }
 
