@@ -39,6 +39,9 @@ private:
 	APlayerState* PlayerWithSailKey = nullptr;
 
 	UPROPERTY()
+	APlayerState* OldPlayerWithSailKey = nullptr;
+
+	UPROPERTY()
 	APearlOfDestiny* PearlOfDestiny = nullptr;
 	
 	UPROPERTY(Replicated)

@@ -18,12 +18,18 @@ void AGreedyGoblinsGameState::PostInitializeComponents()
 
 void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKeyParam)
 {
-	this->PlayerWithSailKey = PlayerWithSailKeyParam;
+	if(PlayerWithSailKey != nullptr)
+	{
+		OldPlayerWithSailKey = PlayerWithSailKey;
+		UE_LOG(LogTemp, Warning, TEXT("Player number %d has lost the sail key"), OldPlayerWithSailKey->GetPlayerId());
+	}
+		
+	PlayerWithSailKey = PlayerWithSailKeyParam;
 	EnragedMode = true;
 	StartSailKeyHitDelay();
 	DisableShieldForSailKeyOwner();
-	
-	UE_LOG(LogTemp, Warning, TEXT("%d has the sail key"), PlayerWithSailKey->GetPlayerId());
+
+	UE_LOG(LogTemp, Warning, TEXT("Player number %d stole the sail key"), PlayerWithSailKey->GetPlayerId());
 	
 	//TODO BoatWithSailKey->SetBoatLightCylinder();
 }
@@ -46,8 +52,15 @@ void AGreedyGoblinsGameState::DisableShieldForSailKeyOwner()
 {
 	ABoat* BoatWithSailKey = Cast<ABoat>(PlayerWithSailKey->GetPawn());
 	if(!ensure(BoatWithSailKey != nullptr)) return;
+
+	BoatWithSailKey->BoxCollider->SetCollisionProfileName("PlayerWithSailKey");
 	
-	//TODO  PlayerWithSailKeyBoat->BoxCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1);
+	if(OldPlayerWithSailKey != nullptr)
+	{
+		ABoat* OldBoatWithSailKey = Cast<ABoat>(OldPlayerWithSailKey->GetPawn());
+		if(!ensure(OldBoatWithSailKey != nullptr)) return;
+		OldBoatWithSailKey->BoxCollider->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
+	}
 }
 
 void AGreedyGoblinsGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {

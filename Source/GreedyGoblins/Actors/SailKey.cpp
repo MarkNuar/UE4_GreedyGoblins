@@ -52,7 +52,5 @@ void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 	
 	GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerStateWithSailKey);
 	
-
 	this->Destroy();
-	
 }

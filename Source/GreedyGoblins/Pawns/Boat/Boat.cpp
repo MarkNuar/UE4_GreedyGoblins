@@ -117,7 +117,7 @@ void ABoat::LookRightRate(float AxisValue)
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if(OtherActor->GetClass() == this->StaticClass())
+	if(OtherActor->GetClass()->IsChildOf(this->StaticClass()))
 	{
 		AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
 		if (!ensure(GreedyGoblinsGameState != nullptr)) return;
