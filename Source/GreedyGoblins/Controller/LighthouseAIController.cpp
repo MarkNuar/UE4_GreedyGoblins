@@ -2,9 +2,6 @@
 
 
 #include "LighthouseAIController.h"
-
-#include "BehaviorTree/BlackboardComponent.h"
-#include "BehaviorTree/Tasks/BTTask_MoveTo.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -12,15 +9,9 @@ void ALighthouseAIController::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if(AIBehavior != nullptr)
+	if(AIBehavior != nullptr && HasAuthority())
 	{
 		RunBehaviorTree(AIBehavior);
-		// APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0); // gets the single player playing
-		// GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"),PlayerPawn->GetActorLocation());
-
-		
-		// APawn* AIPawn = GetPawn(); // gets the pawn that this ai controller is controlling
-		// GetBlackboardComponent()->SetValueAsVector(TEXT("StartLocation"),AIPawn->GetActorLocation());
 	}
 }
 

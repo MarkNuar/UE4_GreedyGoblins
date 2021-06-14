@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ABoat::ABoat()
@@ -61,6 +62,11 @@ void ABoat::Tick(float DeltaTime)
 	
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
 
+	if(ShowLightCylinder)
+	{
+		DrawDebugString(GetWorld(), FVector(0, 0, -20), "I HAVE THE POWER HAHAHAHA",this, FColor::White, DeltaTime);
+	}
+	
 	if(GetPlayerState() != nullptr)
 	{
 		DrawDebugString(GetWorld(), FVector(0, 0, 20), "Player number " + FString::FromInt(GetPlayerState()->GetPlayerId()),this, FColor::White, DeltaTime);
@@ -78,6 +84,13 @@ void ABoat::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &ABoat::LookUpRate);
 	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ABoat::LookRightRate);
 
+}
+
+
+void ABoat::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ABoat, ShowLightCylinder);
 }
 
 void ABoat::MoveForward(float Value)
@@ -114,6 +127,7 @@ void ABoat::LookRightRate(float AxisValue)
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
+	
 	if(OtherActor->GetClass()->IsChildOf(this->StaticClass()))
 	{
 		AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());

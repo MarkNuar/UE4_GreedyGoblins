@@ -34,6 +34,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	FVector GetPositionAlongSpline() const;
+	
 	UCapsuleComponent* GetPatrolTargetComponent() const
 	{
 		return PatrolTargetComponent;
@@ -60,6 +62,17 @@ private:
 	UPROPERTY(EditAnywhere)
 	float LightSpeed = 5.0f;
 
+	// Max Distance possible from Patrol Target in METERS
+	UPROPERTY(EditAnywhere)
+	float MaxPatrolTargetDistance = 200;
+
+public:
+	float GetMaxPatrolTargetDistance() const
+	{
+		return MaxPatrolTargetDistance;
+	}
+
+private:
 	UPROPERTY()
 	ABoat* BoatToChase;
 	

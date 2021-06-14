@@ -28,6 +28,8 @@ protected:
 private:
 	FVector HomeSplinePosition;
 
+	FVector StartPatrolTargetPosition;
+	
 	UPROPERTY()
 	UCapsuleComponent* PatrolTargetComponent;
 

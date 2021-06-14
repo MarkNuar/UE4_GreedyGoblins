@@ -44,10 +44,25 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	void LookRight(float Value);
 	void LookUpRate(float Value);
 	void LookRightRate(float Value);
+
+	UPROPERTY(Replicated)
+	bool ShowLightCylinder = false;
 	
+public:
+	bool GetShowLightCylinder() const
+	{
+		return ShowLightCylinder;
+	}
+
+	void SetShowLightCylinder(bool bShowLightCylinder)
+	{
+		ShowLightCylinder = bShowLightCylinder;
+	}
+
+private:
 	UPROPERTY(EditAnywhere)
 	float RotationRate = 10;
-
+	
 	UFUNCTION()
 	void OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };

@@ -29,11 +29,9 @@ public:
 	void UpdateSailKeyOwner(APlayerState* PlayerWithSailKeyParam);
 
 	bool HasSailKey(APlayerState* PlayerState);
-
-	virtual void PostInitializeComponents() override;
 	
 private:
-	FTimerHandle SailKeyHitDelay;
+	FTimerHandle SailKeyTimerHandle;
 	
 	UPROPERTY()
 	APlayerState* PlayerWithSailKey = nullptr;
@@ -41,8 +39,8 @@ private:
 	UPROPERTY()
 	APlayerState* OldPlayerWithSailKey = nullptr;
 
-	UPROPERTY()
-	APearlOfDestiny* PearlOfDestiny = nullptr;
+	UPROPERTY(EditAnywhere)
+	float SailKeyHitDelay = 2.0f;
 	
 	UPROPERTY(Replicated)
 	bool EnragedMode = false;

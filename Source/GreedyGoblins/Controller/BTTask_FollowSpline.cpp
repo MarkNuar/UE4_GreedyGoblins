@@ -4,12 +4,12 @@
 #include "BTTask_FollowSpline.h"
 
 #include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "GreedyGoblins/Pawns/Enemies/LightHouse/LightHouse.h"
 
 UBTTask_FollowSpline::UBTTask_FollowSpline()
 {
 	NodeName = TEXT("Follow Spline");
-
 	bNotifyTick = true;
 }
 
@@ -31,7 +31,7 @@ EBTNodeResult::Type UBTTask_FollowSpline::ExecuteTask(UBehaviorTreeComponent& Ow
 	float Time = SplineComponent->GetSplineLength() / (LightHouse->GetLightSpeed() * 100.0f);
     
     InterpStep = 1 / Time;
-    	
+ 
 	return EBTNodeResult::InProgress;
 }
 
@@ -74,5 +74,4 @@ float UBTTask_FollowSpline::TimeInterp(float DeltaTime){
 		}
 	}
 	return AlphaMovement;
-
 }

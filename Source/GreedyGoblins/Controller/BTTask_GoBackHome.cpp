@@ -27,22 +27,24 @@ EBTNodeResult::Type UBTTask_GoBackHome::ExecuteTask(UBehaviorTreeComponent& Owne
 	LerpRatio = 0.0f;
 	
 	HomeSplinePosition = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
+	StartPatrolTargetPosition = PatrolTargetComponent->GetComponentLocation();
 	return EBTNodeResult::InProgress;
 	
 }
 
 void UBTTask_GoBackHome::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-
 	LerpRatio += LerpStep * DeltaSeconds;
-	FVector PatrolTargetPosition = FMath::LerpStable(PatrolTargetComponent->GetComponentLocation(), HomeSplinePosition, LerpRatio);
+	
+	FVector PatrolTargetPosition = FMath::LerpStable(StartPatrolTargetPosition, HomeSplinePosition, LerpRatio);
 
 	PatrolTargetComponent->SetWorldLocation(PatrolTargetPosition);
 	
 	if(LerpRatio >= 1)
 	{
+		FName SplineHome = TEXT("HomeSplinePosition");
+		OwnerComp.GetBlackboardComponent()->ClearValue(SplineHome);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-
 }
 

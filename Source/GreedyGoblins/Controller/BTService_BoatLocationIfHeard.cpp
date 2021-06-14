@@ -31,6 +31,12 @@ void UBTService_BoatLocationIfHeard::TickNode(UBehaviorTreeComponent& OwnerComp,
 	if(BoatToChase != nullptr)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), BoatToChase);
+		FName SplineHome = TEXT("HomeSplinePosition");
+		
+		if(!OwnerComp.GetBlackboardComponent()->IsVectorValueSet(SplineHome))
+		{
+			OwnerComp.GetBlackboardComponent()->SetValueAsVector(SplineHome, LightHouse->GetPositionAlongSpline());
+		}
 	}
 	else
 	{

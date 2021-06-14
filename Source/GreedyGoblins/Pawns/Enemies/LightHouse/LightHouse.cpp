@@ -59,6 +59,11 @@ void ALightHouse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
+FVector ALightHouse::GetPositionAlongSpline() const
+{
+	return SplineComponent->FindLocationClosestToWorldLocation(PatrolTargetComponent->GetComponentLocation(), ESplineCoordinateSpace::World);	
+}
+
 void ALightHouse::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(!ensure(OtherActor)) return;

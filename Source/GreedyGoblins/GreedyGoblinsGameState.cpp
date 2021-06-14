@@ -7,14 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Pawns/Boat/Boat.h"
-
-void AGreedyGoblinsGameState::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	PearlOfDestiny = Cast<APearlOfDestiny>(UGameplayStatics::GetActorOfClass(GetWorld(),APearlOfDestiny::StaticClass()));
-	if(!ensure(PearlOfDestiny != nullptr)) UE_LOG(LogTemp, Error, TEXT("Pearl of Destiny not found!"));
-}
+#define ECC_PlayerWithSailKey ECC_GameTraceChannel1
 
 void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKeyParam)
 {
@@ -22,6 +15,11 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKey
 	{
 		OldPlayerWithSailKey = PlayerWithSailKey;
 		UE_LOG(LogTemp, Warning, TEXT("Player number %d has lost the sail key"), OldPlayerWithSailKey->GetPlayerId());
+
+		ABoat* OldBoatWithSailKey = Cast<ABoat>(OldPlayerWithSailKey->GetPawn());
+		if(!ensure(OldBoatWithSailKey != nullptr)) return;
+
+		OldBoatWithSailKey->SetShowLightCylinder(false);
 	}
 		
 	PlayerWithSailKey = PlayerWithSailKeyParam;
@@ -31,7 +29,12 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKey
 
 	UE_LOG(LogTemp, Warning, TEXT("Player number %d stole the sail key"), PlayerWithSailKey->GetPlayerId());
 	
-	//TODO BoatWithSailKey->SetBoatLightCylinder();
+	//TODO BoatWithSailKey->Mesh->EnableLightCylinder();
+	
+	ABoat* BoatWithSailKey = Cast<ABoat>(PlayerWithSailKey->GetPawn());
+	if(!ensure(BoatWithSailKey != nullptr)) return;
+
+	BoatWithSailKey->SetShowLightCylinder(true);
 }
 
 bool AGreedyGoblinsGameState::HasSailKey(APlayerState* PlayerState)
@@ -41,10 +44,10 @@ bool AGreedyGoblinsGameState::HasSailKey(APlayerState* PlayerState)
 
 void AGreedyGoblinsGameState::StartSailKeyHitDelay()
 {
-	if(!GetWorldTimerManager().IsTimerActive(SailKeyHitDelay))
+	if(!GetWorldTimerManager().IsTimerActive(SailKeyTimerHandle))
 	{
 		CanGetSailKey = false;
-		GetWorldTimerManager().SetTimer(SailKeyHitDelay, this, &AGreedyGoblinsGameState::SetCanGetSailKey,2);
+		GetWorldTimerManager().SetTimer(SailKeyTimerHandle, this, &AGreedyGoblinsGameState::SetCanGetSailKey,SailKeyHitDelay);
 	}
 }
 
@@ -53,13 +56,13 @@ void AGreedyGoblinsGameState::UpdatePearlShield()
 	ABoat* BoatWithSailKey = Cast<ABoat>(PlayerWithSailKey->GetPawn());
 	if(!ensure(BoatWithSailKey != nullptr)) return;
 
-	BoatWithSailKey->BoxCollider->SetCollisionProfileName("PlayerWithSailKey");
+	BoatWithSailKey->BoxCollider->SetCollisionObjectType(ECC_PlayerWithSailKey);
 	
 	if(OldPlayerWithSailKey != nullptr)
 	{
 		ABoat* OldBoatWithSailKey = Cast<ABoat>(OldPlayerWithSailKey->GetPawn());
 		if(!ensure(OldBoatWithSailKey != nullptr)) return;
-		OldBoatWithSailKey->BoxCollider->SetCollisionProfileName(UCollisionProfile::BlockAllDynamic_ProfileName);
+		OldBoatWithSailKey->BoxCollider->SetCollisionObjectType(ECC_WorldDynamic);
 	}
 }
 
