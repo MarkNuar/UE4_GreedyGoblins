@@ -125,7 +125,7 @@ void UBoatMovementComponent::ApplyRotation(float DeltaTime, float LocalSteeringT
 	GetOwner()->AddActorWorldRotation(RotationDelta);
 }
 
-void UBoatMovementComponent::UpdateNoiseAreaRadius()
+void UBoatMovementComponent::UpdateNoiseAreaRadius() const
 {
 	float Radius;
 	

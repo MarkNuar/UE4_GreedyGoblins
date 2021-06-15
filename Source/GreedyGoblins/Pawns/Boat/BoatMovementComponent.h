@@ -65,7 +65,7 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	void ApplyRotation(float DeltaTime, float SteeringThrow);
 	void UpdateLocationFromVelocity(float DeltaTime);
 	FBoatMove CreateMove(float DeltaTime) const;
-	void UpdateNoiseAreaRadius();
+	void UpdateNoiseAreaRadius() const;
 	bool bIsInFastMode = false;
 	
 	UPROPERTY(EditAnywhere)
