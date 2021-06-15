@@ -7,7 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Pawns/Boat/Boat.h"
-#define ECC_PlayerWithSailKey ECC_GameTraceChannel1
+#define ECC_PLAYER_WITH_SAIL_KEY ECC_GameTraceChannel1
 
 void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKeyParam)
 {
@@ -37,7 +37,7 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKey
 	BoatWithSailKey->SetShowLightCylinder(true);
 }
 
-bool AGreedyGoblinsGameState::HasSailKey(APlayerState* PlayerState)
+bool AGreedyGoblinsGameState::HasSailKey(APlayerState* PlayerState) const
 {
 	return PlayerWithSailKey == PlayerState;
 }
@@ -51,12 +51,12 @@ void AGreedyGoblinsGameState::StartSailKeyHitDelay()
 	}
 }
 
-void AGreedyGoblinsGameState::UpdatePearlShield()
+void AGreedyGoblinsGameState::UpdatePearlShield() const
 {
 	ABoat* BoatWithSailKey = Cast<ABoat>(PlayerWithSailKey->GetPawn());
 	if(!ensure(BoatWithSailKey != nullptr)) return;
 
-	BoatWithSailKey->BoxCollider->SetCollisionObjectType(ECC_PlayerWithSailKey);
+	BoatWithSailKey->BoxCollider->SetCollisionObjectType(ECC_PLAYER_WITH_SAIL_KEY);
 	
 	if(OldPlayerWithSailKey != nullptr)
 	{

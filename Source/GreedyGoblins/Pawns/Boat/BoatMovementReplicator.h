@@ -71,11 +71,11 @@ private:
 	void ClientTick(float DeltaTime);
 	FHermiteCubicSpline CreateSpline();
 	
-	void InterpolateLocation(const FHermiteCubicSpline& Spline, float LerpRatio);
+	void InterpolateLocation(const FHermiteCubicSpline& Spline, float LerpRatio) const;
 	void InterpolateVelocity(const FHermiteCubicSpline& Spline, float LerpRatio);
-	void InterpolateRotation(float LerpRatio);
+	void InterpolateRotation(float LerpRatio) const;
 
-	float VelocityToDerivative();
+	float VelocityToDerivative() const;
 	
 	UFUNCTION(Server, Reliable, WithValidation) // RPC client to server call
 	void Server_SendMove(FBoatMove Move); // Client sends move to server: EXECUTED ONLY ON SERVER so only the server can validate the move of the client

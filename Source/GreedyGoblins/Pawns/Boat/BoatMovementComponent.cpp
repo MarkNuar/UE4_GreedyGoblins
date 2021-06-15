@@ -20,7 +20,11 @@ void UBoatMovementComponent::BeginPlay()
 	Super::BeginPlay();
 
 	// ...
-
+	
+	NoiseAreaCollider = GetOwner()->FindComponentByClass<USphereComponent>();
+	if(!ensure(NoiseAreaCollider != nullptr)) return;
+	NoiseAreaCollider->SetSphereRadius(0);
+	
 	Velocity = FVector::ZeroVector;
 }
 
@@ -39,7 +43,6 @@ void UBoatMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server simulates the moves of the other clients 
 {
-
 	if(abs(Move.Throttle) < SMALL_NUMBER && Velocity.Size() > 0)
 	{
 		FVector PrevVel = Velocity;
@@ -55,15 +58,29 @@ void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server si
 		Velocity = Velocity + GetOwner()->GetActorForwardVector() * Move.Throttle * Acceleration * Move.DeltaTime;
 	}
 	
-	Velocity = Velocity.GetClampedToMaxSize(MaxBaseSpeed);
+	Velocity = Velocity.GetClampedToMaxSize(MaxSpeed);
 	Speed = Velocity.Size();
-	
+
+	UpdateNoiseAreaRadius();
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
 	UpdateLocationFromVelocity(Move.DeltaTime);
-	
 }
 
-FBoatMove UBoatMovementComponent::CreateMove(float DeltaTime)
+void UBoatMovementComponent::ToggleFastMode()
+{
+	if(!bIsInFastMode)
+	{
+		bIsInFastMode = true;
+		MaxSpeed = FastModeMaxSpeed;
+	}
+	else
+	{
+		bIsInFastMode = false;
+		MaxSpeed = StealthModeMaxSpeed;
+	}
+}
+
+FBoatMove UBoatMovementComponent::CreateMove(float DeltaTime) const
 {
 	FBoatMove Move;
 	Move.DeltaTime = DeltaTime;
@@ -107,5 +124,24 @@ void UBoatMovementComponent::ApplyRotation(float DeltaTime, float LocalSteeringT
     Velocity = RotationDelta.RotateVector(Velocity);
 	GetOwner()->AddActorWorldRotation(RotationDelta);
 }
+
+void UBoatMovementComponent::UpdateNoiseAreaRadius()
+{
+	float Radius;
+	
+	if(bIsInFastMode)
+	{
+		Radius = Speed * MaxFastModeNoiseAreaRadius / (0.35 * MaxSpeed);
+		Radius = FMath::Clamp(Radius, 0.f, MaxFastModeNoiseAreaRadius);
+	}
+	else
+	{
+		Radius = Speed * MaxStealthModeNoiseAreaRadius / (0.35 * MaxSpeed);
+		Radius = FMath::Clamp(Radius, 0.f, MaxStealthModeNoiseAreaRadius);
+	}
+	
+	NoiseAreaCollider->SetSphereRadius(Radius * 100);
+}
+
 
 

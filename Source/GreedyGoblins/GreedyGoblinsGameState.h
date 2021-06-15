@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 
-#include "Actors/PearlOfDestiny.h"
 #include "GameFramework/GameState.h"
 #include "GreedyGoblinsGameState.generated.h"
 
@@ -28,7 +27,7 @@ public:
 
 	void UpdateSailKeyOwner(APlayerState* PlayerWithSailKeyParam);
 
-	bool HasSailKey(APlayerState* PlayerState);
+	bool HasSailKey(APlayerState* PlayerState) const;
 	
 private:
 	FTimerHandle SailKeyTimerHandle;
@@ -49,6 +48,6 @@ private:
 
 	void StartSailKeyHitDelay();
 
-	void UpdatePearlShield();
+	void UpdatePearlShield() const;
 	
 };

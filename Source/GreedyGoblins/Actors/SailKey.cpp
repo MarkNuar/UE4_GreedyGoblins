@@ -40,17 +40,20 @@ void ASailKey::Tick(float DeltaTime)
 }
 
 void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{	
-	ABoat* BoatWithSailKey = Cast<ABoat>(OtherActor);
-	if (!ensure(BoatWithSailKey != nullptr)) return;
+{
+	if(OtherComp->GetClass()->IsChildOf(UBoxComponent::StaticClass()))
+	{
+		ABoat* BoatWithSailKey = Cast<ABoat>(OtherActor);
+		if (!ensure(BoatWithSailKey != nullptr)) return;
 	
-	APlayerState* PlayerStateWithSailKey = BoatWithSailKey->GetPlayerState();
-	if (!ensure(PlayerStateWithSailKey != nullptr)) return;
+		APlayerState* PlayerStateWithSailKey = BoatWithSailKey->GetPlayerState();
+		if (!ensure(PlayerStateWithSailKey != nullptr)) return;
 	
-	AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
-	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
+		AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+		if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 	
-	GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerStateWithSailKey);
+		GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerStateWithSailKey);
 	
-	this->Destroy();
+		this->Destroy();
+	}
 }

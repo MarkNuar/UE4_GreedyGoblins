@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/SphereComponent.h"
+
 #include "BoatMovementComponent.generated.h"
 
 USTRUCT()
@@ -45,39 +47,61 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	void SimulateMove(const FBoatMove& Move);
-
-	FVector GetVelocity() { return Velocity; }
+	void ToggleFastMode();
+	
+	FVector GetVelocity() const { return Velocity; }
 	void SetVelocity(FVector Val) { Velocity = Val; }
 
 	void SetThrottle(float Val) { Throttle = Val; }
 	void SetSteeringThrow(float Val) { SteeringThrow = Val; }
 
-	FBoatMove GetLastMove() { return LastMove; }
+	FBoatMove GetLastMove() const { return LastMove; }
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USphereComponent* NoiseAreaCollider;
 	
 	private:
 
 	void ApplyRotation(float DeltaTime, float SteeringThrow);
 	void UpdateLocationFromVelocity(float DeltaTime);
-	FBoatMove CreateMove(float DeltaTime);
-
+	FBoatMove CreateMove(float DeltaTime) const;
+	void UpdateNoiseAreaRadius();
+	bool bIsInFastMode = false;
+	
 	UPROPERTY(EditAnywhere)
 	float Acceleration = 5;
 
 	UPROPERTY(EditAnywhere)
 	float Deceleration = 5;
 	
-	//Max  Speed in m/s
+	// Max Stealth Mode speed in m/s
 	UPROPERTY(EditAnywhere)
-	float MaxBaseSpeed = 25;
+	float StealthModeMaxSpeed = 25;
+	
+	// Max Fast Mode speed in m/s
+	UPROPERTY(EditAnywhere)
+	float FastModeMaxSpeed = 50;
 
-	// minimum radius of the car turning circle at full lock (m)
+	// Radius of the noise area in stealth mode in meters
+	UPROPERTY(EditAnywhere)
+	float MaxStealthModeNoiseAreaRadius = 10;
+
+	// Radius of the noise area in fast mode in meters
+	UPROPERTY(EditAnywhere)
+	float MaxFastModeNoiseAreaRadius = 20;
+	
+	// Minimum radius of the boat turning circle at full lock (m)
 	UPROPERTY(EditAnywhere)
 	float MinTurningRadius = 10;
 
 	FVector Velocity;
-
+	
+	float MaxSpeed = StealthModeMaxSpeed;
+	
 	UPROPERTY(VisibleAnywhere)
 	float Throttle; // Value between -1 and 1 INTEGER
+
+	UPROPERTY(VisibleAnywhere)
 	float SteeringThrow;
 
 	UPROPERTY(VisibleAnywhere)

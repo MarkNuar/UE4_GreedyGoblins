@@ -10,9 +10,9 @@ void UServerRow::Setup(UMainMenu* ParentPar, uint32 IndexPar){
 	if(!ensure(RowButton)) return;
 	Parent = ParentPar;
 	Index = IndexPar;
-	RowButton->OnClicked.AddDynamic(this, &UServerRow::OnCLick);
+	RowButton->OnClicked.AddDynamic(this, &UServerRow::OnClick);
 }
 
-void UServerRow::OnCLick(){
+void UServerRow::OnClick(){
 	Parent->SelectIndex(Index);
 }

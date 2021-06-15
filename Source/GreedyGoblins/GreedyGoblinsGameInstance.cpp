@@ -126,7 +126,7 @@ void UGreedyGoblinsGameInstance::OnDestroySessionComplete(FName SessionName, boo
 	}
 }
 
-void UGreedyGoblinsGameInstance::CreateSession()
+void UGreedyGoblinsGameInstance::CreateSession() const
 {
 	if(SessionInterface.IsValid())
 	{
@@ -243,7 +243,7 @@ void UGreedyGoblinsGameInstance::OnFindSessionComplete(bool Success)
 	}
 }
 
-void UGreedyGoblinsGameInstance::StartSession()
+void UGreedyGoblinsGameInstance::StartSession() const
 {
 	if(SessionInterface.IsValid())
 	{

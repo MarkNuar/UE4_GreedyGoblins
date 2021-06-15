@@ -17,8 +17,7 @@ ABoat::ABoat()
 	bReplicates = true;
 	
 	MovementComponent = CreateDefaultSubobject<UBoatMovementComponent>(TEXT("MovementComponent"));
-	MovementReplicator = CreateDefaultSubobject<UBoatMovementReplicator>(TEXT("MovementReplicator"));
-	
+	MovementReplicator = CreateDefaultSubobject<UBoatMovementReplicator>(TEXT("MovementReplicator"));	
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +27,7 @@ void ABoat::BeginPlay()
 
 	BoxCollider = FindComponentByClass<UBoxComponent>();
 	if(!ensure(BoxCollider != nullptr)) return;
-			
+	
 	SetReplicateMovement(false);
 
 	if(HasAuthority()) // Executed only by the server (It's executed ON clients too, but not BY them: still by the server)
@@ -83,9 +82,8 @@ void ABoat::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &ABoat::LookRight);
 	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &ABoat::LookUpRate);
 	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &ABoat::LookRightRate);
-
+	PlayerInputComponent->BindAction(TEXT("FastMode"), IE_Pressed,this, &ABoat::ToggleFastMode);
 }
-
 
 void ABoat::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -127,7 +125,6 @@ void ABoat::LookRightRate(float AxisValue)
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	
 	if(OtherActor->GetClass()->IsChildOf(this->StaticClass()))
 	{
 		AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
@@ -140,6 +137,11 @@ void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 			GreedyGoblinsGameState->UpdateSailKeyOwner(GetPlayerState());
 		}
 	}
-
 }
+
+void ABoat::ToggleFastMode()
+{
+	MovementComponent->ToggleFastMode();
+}
+
 

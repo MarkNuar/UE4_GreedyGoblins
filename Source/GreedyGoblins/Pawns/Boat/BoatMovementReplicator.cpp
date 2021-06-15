@@ -87,7 +87,7 @@ FHermiteCubicSpline UBoatMovementReplicator::CreateSpline()
 	return Spline;
 }
 
-void UBoatMovementReplicator::InterpolateLocation(const FHermiteCubicSpline& Spline, float LerpRatio)
+void UBoatMovementReplicator::InterpolateLocation(const FHermiteCubicSpline& Spline, float LerpRatio) const
 {
 	FVector NewLocation = Spline.InterpolateLocation(LerpRatio);
 	
@@ -102,7 +102,7 @@ void UBoatMovementReplicator::InterpolateVelocity(const FHermiteCubicSpline& Spl
 	MovementComponent->SetVelocity(NewVelocity);
 }
 
-void UBoatMovementReplicator::InterpolateRotation(float LerpRatio)
+void UBoatMovementReplicator::InterpolateRotation(float LerpRatio) const
 {
 	FQuat TargetRotation = ServerState.Transform.GetRotation();
 	FQuat StartRotation = ClientStartTransform.GetRotation();
@@ -113,7 +113,7 @@ void UBoatMovementReplicator::InterpolateRotation(float LerpRatio)
 }
 
 
-float UBoatMovementReplicator::VelocityToDerivative()
+float UBoatMovementReplicator::VelocityToDerivative() const
 {
 	return ClientTimeBetweenLastUpdates * 100;
 }

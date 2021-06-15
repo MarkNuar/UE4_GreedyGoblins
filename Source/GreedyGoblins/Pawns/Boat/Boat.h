@@ -7,6 +7,7 @@
 #include "BoatMovementComponent.h"
 #include "BoatMovementReplicator.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Boat.generated.h"
 
@@ -44,6 +45,7 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	void LookRight(float Value);
 	void LookUpRate(float Value);
 	void LookRightRate(float Value);
+	void ToggleFastMode();
 
 	UPROPERTY(Replicated)
 	bool ShowLightCylinder = false;
@@ -66,3 +68,5 @@ private:
 	UFUNCTION()
 	void OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 };
+
+

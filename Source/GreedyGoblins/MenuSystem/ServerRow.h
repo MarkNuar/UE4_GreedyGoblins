@@ -43,5 +43,5 @@ private:
 	uint32 Index;
 
 	UFUNCTION()
-	void OnCLick();
+	void OnClick();
 };

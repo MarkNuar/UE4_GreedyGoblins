@@ -31,12 +31,12 @@ public:
 	void InGameLoadMenu();
 
 	UFUNCTION(Exec)
-	void Host(FString ServerName) override;
+	virtual void Host(FString ServerName) override;
 
 	UFUNCTION(Exec)
-	void Join(uint32 Index) override;
+	virtual void Join(uint32 Index) override;
 
-	void StartSession();
+	void StartSession() const;
 
 	UFUNCTION(Exec)
 	virtual void LoadMainMenu() override;
@@ -73,5 +73,5 @@ private:
 
 	FString DesiredServerName;
 	
-	void CreateSession();
+	void CreateSession() const;
 };
