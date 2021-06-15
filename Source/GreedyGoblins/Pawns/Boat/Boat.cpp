@@ -4,9 +4,11 @@
 #include "Boat.h"
 
 #include "DrawDebugHelpers.h"
+#include "ToolBuilderUtil.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values
@@ -121,6 +123,14 @@ void ABoat::LookUpRate(float AxisValue)
 void ABoat::LookRightRate(float AxisValue)
 {
 	AddControllerYawInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds()); 
+}
+
+void ABoat::Caught()
+{
+	// TArray<AActor*> FoundActors;
+	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
+	// AActor* Spawn = FoundActors[FMath::RandRange(0, FoundActors.Num()-1)];
+	// this->SetActorTransform(Spawn->GetTransform());
 }
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
