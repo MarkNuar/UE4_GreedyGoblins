@@ -100,18 +100,28 @@ void UBoatMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 
 	if (HitResult.IsValidBlockingHit())
 	{
-		Velocity = FVector::ZeroVector;
-		// TODO
-		// FVector OppositeNormal = HitResult.Normal;
-		//
-		// if (FVector::DotProduct(Velocity, OppositeNormal) / (Velocity.Size() * OppositeNormal.Size() < FMath::Sqrt(2)/2)) // angolo maggiore di 45 gradi 
-		// {
-		// 	
-		// }
-		// else
-		// {
-		// 	Velocity = FVector::VectorPlaneProject(HitResult.Normal * 10, FVector::ZAxisVector).ProjectOnTo(GetOwner()->GetActorForwardVector()); // bouncyness
-		// }
+		//TODO make parameters visible from editor
+		FVector Normal = FVector::VectorPlaneProject(HitResult.Normal, FVector::ZAxisVector); // Normal vector parallel to 
+		FVector OppositeNormalU = -Normal.GetSafeNormal();
+		FVector VelocityU = Velocity.GetSafeNormal();
+		float CollisionAngle = FMath::Acos(FVector::DotProduct(OppositeNormalU, VelocityU));
+		float CollisionAngleDegrees = FMath::RadiansToDegrees(CollisionAngle);
+		
+		if (CollisionAngleDegrees < 35) // 20 degrees limit angle for bounce 
+		{
+			Velocity = 15 * Normal.ProjectOnTo(GetOwner()->GetActorForwardVector()); // 10 = bouncyness
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::RadiansToDegrees(0.8 + PI/2 - CollisionAngle));
+			float BoatRotationAngle = (0.8 + PI/2 - CollisionAngle) * DeltaTime;
+		
+			FQuat RotationDelta(FVector::CrossProduct(OppositeNormalU, VelocityU), 5 * BoatRotationAngle);
+			Velocity = RotationDelta.RotateVector(Velocity);
+			GetOwner()->AddActorWorldRotation(RotationDelta);
+		}
+
+		//Velocity = FVector::ZeroVector;
 	}
 }
 
