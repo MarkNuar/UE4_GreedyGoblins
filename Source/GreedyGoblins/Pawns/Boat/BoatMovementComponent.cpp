@@ -106,7 +106,7 @@ void UBoatMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 
 void UBoatMovementComponent::OnWallHit(FVector HitNormal, float DeltaTime)
 {
-	const FVector OppositeNormalU = -FVector::VectorPlaneProject(HitNormal, FVector::ZAxisVector).GetSafeNormal(); // Normal vector parallel to 
+	const FVector OppositeNormalU = -FVector::VectorPlaneProject(HitNormal, FVector::ZAxisVector).GetSafeNormal(); // Normal vector parallel to the xy plane
 	const FVector VelocityU = Velocity.GetSafeNormal();
 	const float CollisionAngle = FMath::Acos(FVector::DotProduct(OppositeNormalU, VelocityU));
 	const float CollisionAngleDegrees = FMath::RadiansToDegrees(CollisionAngle);

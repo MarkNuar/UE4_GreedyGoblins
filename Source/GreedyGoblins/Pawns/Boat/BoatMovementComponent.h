@@ -84,11 +84,11 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 
 	// Radius of the noise area in stealth mode in meters
 	UPROPERTY(EditAnywhere)
-	float MaxStealthModeNoiseAreaRadius = 10;
+	float MaxStealthModeNoiseAreaRadius = 50;
 
 	// Radius of the noise area in fast mode in meters
 	UPROPERTY(EditAnywhere)
-	float MaxFastModeNoiseAreaRadius = 20;
+	float MaxFastModeNoiseAreaRadius = 100;
 	
 	// Minimum radius of the boat turning circle at full lock (m)
 	UPROPERTY(EditAnywhere)
@@ -109,14 +109,14 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 
 	FBoatMove LastMove;
 
-	// Minimum angle, in degrees, after which, the ships slide alongside a wall
+	// Minimum angle, in degrees, after which the ships slides along a wall
 	UPROPERTY(EditAnywhere)
 	float MinSlideAngle = 35;
 
 	UPROPERTY(EditAnywhere)
 	float OnWallSlideRotationSpeed = 5;
 
-	// Amount of bounce when boat collide with a wall with an angle less than 
+	// Amount of bounce when the boat collides with a wall with an angle less than MinSlideAngle
 	UPROPERTY(EditAnywhere)
 	float Bouncyness = 15;
 

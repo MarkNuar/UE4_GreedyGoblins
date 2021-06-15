@@ -6,6 +6,8 @@
 
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
+#include "GreedyGoblins/GreedyGoblinsGameState.h"
+
 #include "SailKey.generated.h"
 
 UCLASS()
@@ -32,6 +34,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* SailMesh;
+
+	UPROPERTY()
+	AGreedyGoblinsGameState* GreedyGoblinsGameState;
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

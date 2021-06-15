@@ -22,7 +22,7 @@ public:
 private:
 
 	UPROPERTY()
-	UCapsuleComponent* PatrolTargetComponent;
+	USceneComponent* PatrolTargetTransform;
 
 	UPROPERTY()
 	ALightHouse* LightHouse;

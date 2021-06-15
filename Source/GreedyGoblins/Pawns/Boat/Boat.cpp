@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "ToolBuilderUtil.h"
 #include "Components/BoxComponent.h"
+#include "GameFramework/PlayerStart.h"
 #include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
 #include "Kismet/GameplayStatics.h"
@@ -66,11 +67,16 @@ void ABoat::Tick(float DeltaTime)
 	
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
 
-	
 	if(ShowLightCylinder)
 	{
 		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(false);
 		DrawDebugString(GetWorld(), FVector(0, 0, -20), "I HAVE THE SAIL KEY AGAGGAHAGAGGGA", this, FColor::White, DeltaTime);
+		
+		UEngine* Engine = GetGameInstance()->GetEngine();
+		if(!ensure(Engine!=nullptr)) return;
+		Engine->AddOnScreenDebugMessage(0, 3, FColor::Green, TEXT("PLAYER NUM " + FString::FromInt(GetPlayerState()->GetPlayerId()) + "has the sail key"));
+		Engine->AddOnScreenDebugMessage(1, 3, FColor::Green, TEXT("PLAYER NUM " + FString::FromInt(GetPlayerState()->GetPlayerId()) + "has the sail key"));
+		Engine->AddOnScreenDebugMessage(2, 3, FColor::Green, TEXT("PLAYER NUM " + FString::FromInt(GetPlayerState()->GetPlayerId()) + "has the sail key"));
 	}
 	else
 	{
@@ -136,10 +142,11 @@ void ABoat::LookRightRate(float AxisValue)
 
 void ABoat::Caught()
 {
-	// TArray<AActor*> FoundActors;
-	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
-	// AActor* Spawn = FoundActors[FMath::RandRange(0, FoundActors.Num()-1)];
-	// this->SetActorTransform(Spawn->GetTransform());
+	MovementComponent->SetVelocity(FVector::ZeroVector);
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
+	AActor* Spawn = FoundActors[FMath::RandRange(0, FoundActors.Num()-1)];
+	this->SetActorTransform(Spawn->GetTransform());
 }
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)

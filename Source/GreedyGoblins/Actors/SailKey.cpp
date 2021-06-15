@@ -29,7 +29,8 @@ ASailKey::ASailKey()
 void ASailKey::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 }
 
 // Called every frame
@@ -37,6 +38,8 @@ void ASailKey::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(GreedyGoblinsGameState->GetEnragedMode() && !HasAuthority())
+		this->Destroy();
 }
 
 void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -49,7 +52,7 @@ void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 		APlayerState* PlayerStateWithSailKey = BoatWithSailKey->GetPlayerState();
 		if (!ensure(PlayerStateWithSailKey != nullptr)) return;
 	
-		AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+		GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
 		if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 	
 		GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerStateWithSailKey);

@@ -15,38 +15,46 @@ ALightHouse::ALightHouse()
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	if(!ensure(Root)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *Root->GetName());
 	RootComponent = Root;
+	
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	if(!ensure(StaticMeshComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *StaticMeshComponent->GetName());
 	StaticMeshComponent->SetupAttachment(RootComponent);
+
 	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
 	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
 	SpotLightComponent->SetupAttachment(StaticMeshComponent);
-	PatrolTargetComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PatrolTargetComponent"));
-	if(!ensure(PatrolTargetComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetComponent->GetName());
-	PatrolTargetComponent->SetupAttachment(RootComponent);
+
+	LightConeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightConeMeshComponent"));
+	if(!ensure(LightConeMeshComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *LightConeMeshComponent->GetName());
+	LightConeMeshComponent->SetupAttachment(SpotLightComponent);
+	
+	PatrolTargetTransform = CreateDefaultSubobject<USceneComponent>(TEXT("PatrolTargetTransform"));
+	if(!ensure(PatrolTargetTransform)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetTransform->GetName());
+	PatrolTargetTransform->SetupAttachment(RootComponent);
+	
 	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
 	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
 	SplineComponent->SetupAttachment(RootComponent);
-
-	//TODO If Has authority
-	PatrolTargetComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
-	PatrolTargetComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);
-
 }
 
 // Called when the game starts or when spawned
 void ALightHouse::BeginPlay()
 {
 	Super::BeginPlay();
-}
 
+	if(HasAuthority())
+	{
+		LightConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
+		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);
+	}
+}
 
 // Called every frame
 void ALightHouse::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
-	const FVector Direction = PatrolTargetComponent->GetComponentLocation() - SpotLightComponent->GetComponentLocation();
+	const FVector Direction = PatrolTargetTransform->GetComponentLocation() - SpotLightComponent->GetComponentLocation();
 	const FRotator Rotation = Direction.Rotation();
 	SpotLightComponent->SetWorldRotation(Rotation);
 	
@@ -61,16 +69,18 @@ void ALightHouse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 FVector ALightHouse::GetPositionAlongSpline() const
 {
-	return SplineComponent->FindLocationClosestToWorldLocation(PatrolTargetComponent->GetComponentLocation(), ESplineCoordinateSpace::World);	
+	return SplineComponent->FindLocationClosestToWorldLocation(PatrolTargetTransform->GetComponentLocation(), ESplineCoordinateSpace::World);	
 }
 
 void ALightHouse::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(!ensure(OtherActor)) return;
 	if(!ensure(OtherComp)) return;
-	
+
+	UE_LOG(LogTemp, Warning, TEXT("SENTIAMO LA HIT"));
 	if(OtherComp->GetClass()->IsChildOf(USphereComponent::StaticClass()) && BoatToChase == nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("LA HIT E LA BARCA"));
 		if(!ensure(Cast<ABoat>(OtherActor))) return;
 		BoatToChase = Cast<ABoat>(OtherActor);
 	}

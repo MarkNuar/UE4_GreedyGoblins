@@ -4,10 +4,8 @@
 
 #include "CoreMinimal.h"
 
-#include "Components/CapsuleComponent.h"
 #include "Components/SplineComponent.h"
 #include "Components/SpotLightComponent.h"
-#include "Components/TimelineComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GreedyGoblins/Pawns/Boat/Boat.h"
 
@@ -25,7 +23,6 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	float TimeInterp(float DeltaTime);
 
 public:	
 	// Called every frame
@@ -36,9 +33,9 @@ public:
 
 	FVector GetPositionAlongSpline() const;
 	
-	UCapsuleComponent* GetPatrolTargetComponent() const
+	USceneComponent* GetPatrolTargetTransform() const
 	{
-		return PatrolTargetComponent;
+		return PatrolTargetTransform;
 	}
 
 	USplineComponent* GetSplineComponent() const
@@ -83,10 +80,13 @@ private:
 	UStaticMeshComponent* StaticMeshComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* LightConeMeshComponent;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USpotLightComponent* SpotLightComponent;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	UCapsuleComponent* PatrolTargetComponent;
+	USceneComponent* PatrolTargetTransform;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USplineComponent* SplineComponent;

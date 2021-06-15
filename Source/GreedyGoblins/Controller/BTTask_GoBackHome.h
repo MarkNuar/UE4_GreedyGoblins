@@ -31,7 +31,7 @@ private:
 	FVector StartPatrolTargetPosition;
 	
 	UPROPERTY()
-	UCapsuleComponent* PatrolTargetComponent;
+	USceneComponent* PatrolTargetTransform;
 
 	float LerpStep;
 	float LerpRatio = 0.f;

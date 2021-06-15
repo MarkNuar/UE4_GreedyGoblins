@@ -17,10 +17,10 @@ EBTNodeResult::Type UBTTask_ChaseBoat::ExecuteTask(UBehaviorTreeComponent& Owner
 {
 	LightHouse = Cast<ALightHouse>(OwnerComp.GetAIOwner()->GetPawn());
 	if(!ensure(LightHouse != nullptr)) return EBTNodeResult::Failed;
-	
+
 	BaseLocation = LightHouse->GetActorLocation();
 	MaxPatrolTargetDistance = LightHouse->GetMaxPatrolTargetDistance();
-	PatrolTargetComponent = LightHouse->GetPatrolTargetComponent();
+	PatrolTargetTransform = LightHouse->GetPatrolTargetTransform();
 	
 	return EBTNodeResult::InProgress;
 }
@@ -28,14 +28,8 @@ EBTNodeResult::Type UBTTask_ChaseBoat::ExecuteTask(UBehaviorTreeComponent& Owner
 void UBTTask_ChaseBoat::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	FVector BoatLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
-
-	if((BoatLocation - BaseLocation).Size() > MaxPatrolTargetDistance * 100)
-	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Aborted);
-		return;
-	}
 	
-	FVector MoveDirection = FVector::VectorPlaneProject(BoatLocation - PatrolTargetComponent->GetComponentLocation(), FVector::ZAxisVector).GetSafeNormal();
+	FVector MoveDirection = FVector::VectorPlaneProject(BoatLocation - PatrolTargetTransform->GetComponentLocation(), FVector::ZAxisVector).GetSafeNormal();
 	FVector Translation = MoveDirection * 100 * LightHouse->GetLightSpeed() * DeltaSeconds;
-	PatrolTargetComponent->AddWorldOffset(Translation);
+	PatrolTargetTransform->AddWorldOffset(Translation);
 }

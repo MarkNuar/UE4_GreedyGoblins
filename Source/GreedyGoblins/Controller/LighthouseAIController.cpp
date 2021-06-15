@@ -4,7 +4,6 @@
 #include "LighthouseAIController.h"
 #include "Kismet/GameplayStatics.h"
 
-
 void ALighthouseAIController::BeginPlay()
 {
 	Super::BeginPlay();
@@ -14,7 +13,6 @@ void ALighthouseAIController::BeginPlay()
 		RunBehaviorTree(AIBehavior);
 	}
 }
-
 
 void ALighthouseAIController::Tick(float DeltaSeconds)
 {

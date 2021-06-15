@@ -37,7 +37,7 @@ private:
 	ALightHouse* LightHouse;
 
 	UPROPERTY()
-	UCapsuleComponent* PatrolTargetComponent;
+	USceneComponent* PatrolTargetTransform;
 
 	UPROPERTY()
 	USplineComponent* SplineComponent;

@@ -20,13 +20,13 @@ EBTNodeResult::Type UBTTask_FollowSpline::ExecuteTask(UBehaviorTreeComponent& Ow
 	if(OwnerComp.GetAIOwner() == nullptr) return EBTNodeResult::Failed; // If there is not AI controller
 	LightHouse = Cast<ALightHouse>(OwnerComp.GetAIOwner()->GetPawn());
 	SplineComponent = LightHouse->GetSplineComponent();
-	PatrolTargetComponent = LightHouse->GetPatrolTargetComponent();
+	PatrolTargetTransform = LightHouse->GetPatrolTargetTransform();
 	if(LightHouse == nullptr) return EBTNodeResult::Failed;
 
-	if(PatrolTargetComponent == nullptr) return EBTNodeResult::Failed;
+	if(PatrolTargetTransform == nullptr) return EBTNodeResult::Failed;
 	if(SplineComponent == nullptr) return EBTNodeResult::Failed;
 
-	PatrolTargetComponent->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(AlphaMovement * SplineComponent->GetSplineLength(), ESplineCoordinateSpace::World));
+	PatrolTargetTransform->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(AlphaMovement * SplineComponent->GetSplineLength(), ESplineCoordinateSpace::World));
 	
 	float Time = SplineComponent->GetSplineLength() / (LightHouse->GetLightSpeed() * 100.0f);
     
@@ -42,10 +42,10 @@ void UBTTask_FollowSpline::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 	// Get reference to the controlled Pawn and execute shoot function
 	
 	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
-	if(!ensure(PatrolTargetComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetComponent->GetName());
+	if(!ensure(PatrolTargetTransform)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetTransform->GetName());
 	
 	float InterpPosition = TimeInterp(DeltaSeconds);
-	PatrolTargetComponent->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(
+	PatrolTargetTransform->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(
 		InterpPosition*SplineComponent->GetSplineLength(), ESplineCoordinateSpace::World
 		));
 }
