@@ -7,7 +7,6 @@
 #include "BoatMovementComponent.h"
 #include "BoatMovementReplicator.h"
 #include "Components/BoxComponent.h"
-#include "Components/SphereComponent.h"
 #include "GameFramework/Pawn.h"
 #include "Boat.generated.h"
 
@@ -60,6 +59,8 @@ public:
 	{
 		ShowLightCylinder = bShowLightCylinder;
 	}
+
+	void Caught();
 
 private:
 	UPROPERTY(EditAnywhere)

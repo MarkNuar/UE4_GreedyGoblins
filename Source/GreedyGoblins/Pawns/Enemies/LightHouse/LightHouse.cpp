@@ -69,10 +69,17 @@ void ALightHouse::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	if(!ensure(OtherActor)) return;
 	if(!ensure(OtherComp)) return;
 	
-	if(Cast<USphereComponent>(OtherComp) && BoatToChase == nullptr)
+	if(OtherComp->GetClass()->IsChildOf(USphereComponent::StaticClass()) && BoatToChase == nullptr)
 	{
 		if(!ensure(Cast<ABoat>(OtherActor))) return;
 		BoatToChase = Cast<ABoat>(OtherActor);
+	}
+
+	if(OtherComp->GetClass()->IsChildOf(UBoxComponent::StaticClass()) && OtherActor->GetClass()->IsChildOf(ABoat::StaticClass()))
+	{
+		ABoat* BoatInLight = Cast<ABoat>(OtherActor);
+		if(!ensure(BoatInLight)) return;
+		BoatInLight->Caught();
 	}
 		
 }
