@@ -100,30 +100,30 @@ void UBoatMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 
 	if (HitResult.IsValidBlockingHit())
 	{
-		//TODO make parameters visible from editor
-		FVector Normal = FVector::VectorPlaneProject(HitResult.Normal, FVector::ZAxisVector); // Normal vector parallel to 
-		FVector OppositeNormalU = -Normal.GetSafeNormal();
-		FVector VelocityU = Velocity.GetSafeNormal();
-		float CollisionAngle = FMath::Acos(FVector::DotProduct(OppositeNormalU, VelocityU));
-		float CollisionAngleDegrees = FMath::RadiansToDegrees(CollisionAngle);
-		
-		if (CollisionAngleDegrees < 35) // 20 degrees limit angle for bounce 
-		{
-			Velocity = 15 * Normal.ProjectOnTo(GetOwner()->GetActorForwardVector()); // 10 = bouncyness
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("%f"), FMath::RadiansToDegrees(0.8 + PI/2 - CollisionAngle));
-			float BoatRotationAngle = (0.8 + PI/2 - CollisionAngle) * DeltaTime;
-		
-			FQuat RotationDelta(FVector::CrossProduct(OppositeNormalU, VelocityU), 5 * BoatRotationAngle);
-			Velocity = RotationDelta.RotateVector(Velocity);
-			GetOwner()->AddActorWorldRotation(RotationDelta);
-		}
-
-		//Velocity = FVector::ZeroVector;
+		OnWallHit(HitResult.Normal, DeltaTime);
 	}
 }
+
+void UBoatMovementComponent::OnWallHit(FVector HitNormal, float DeltaTime)
+{
+	const FVector OppositeNormalU = -FVector::VectorPlaneProject(HitNormal, FVector::ZAxisVector).GetSafeNormal(); // Normal vector parallel to 
+	const FVector VelocityU = Velocity.GetSafeNormal();
+	const float CollisionAngle = FMath::Acos(FVector::DotProduct(OppositeNormalU, VelocityU));
+	const float CollisionAngleDegrees = FMath::RadiansToDegrees(CollisionAngle);
+		
+	if (CollisionAngleDegrees < MinSlideAngle) // 20 degrees limit angle for bounce 
+	{
+		Velocity = - Bouncyness * OppositeNormalU.ProjectOnTo(GetOwner()->GetActorForwardVector()); // 10 = bouncyness
+	}
+	else
+	{
+		const float BoatRotationAngle = (0.8 + PI/2 - CollisionAngle) * DeltaTime;
+		const FQuat RotationDelta(FVector::CrossProduct(OppositeNormalU, VelocityU), OnWallSlideRotationSpeed * BoatRotationAngle);
+		Velocity = RotationDelta.RotateVector(Velocity);
+		GetOwner()->AddActorWorldRotation(RotationDelta);
+	}
+}
+
 
 void UBoatMovementComponent::ApplyRotation(float DeltaTime, float LocalSteeringThrow)
 {

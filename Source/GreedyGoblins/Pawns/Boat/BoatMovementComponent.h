@@ -109,4 +109,17 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 
 	FBoatMove LastMove;
 
+	// Minimum angle, in degrees, after which, the ships slide alongside a wall
+	UPROPERTY(EditAnywhere)
+	float MinSlideAngle = 35;
+
+	UPROPERTY(EditAnywhere)
+	float OnWallSlideRotationSpeed = 5;
+
+	// Amount of bounce when boat collide with a wall with an angle less than 
+	UPROPERTY(EditAnywhere)
+	float Bouncyness = 15;
+
+	void OnWallHit(FVector HitNormal, float DeltaTime);
+
 };
