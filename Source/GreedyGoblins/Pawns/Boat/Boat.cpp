@@ -29,6 +29,9 @@ void ABoat::BeginPlay()
 
 	BoxCollider = FindComponentByClass<UBoxComponent>();
 	if(!ensure(BoxCollider != nullptr)) return;
+	PlayerWithSailKeyLightCylinderMesh = FindComponentByClass<UStaticMeshComponent>();
+	if(!ensure(PlayerWithSailKeyLightCylinderMesh != nullptr)) return;
+	
 	
 	SetReplicateMovement(false);
 
@@ -63,9 +66,15 @@ void ABoat::Tick(float DeltaTime)
 	
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
 
+	
 	if(ShowLightCylinder)
 	{
-		DrawDebugString(GetWorld(), FVector(0, 0, -20), "I HAVE THE POWER HAHAHAHA",this, FColor::White, DeltaTime);
+		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(false);
+		DrawDebugString(GetWorld(), FVector(0, 0, -20), "I HAVE THE SAIL KEY AGAGGAHAGAGGGA", this, FColor::White, DeltaTime);
+	}
+	else
+	{
+		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(true);
 	}
 	
 	if(GetPlayerState() != nullptr)

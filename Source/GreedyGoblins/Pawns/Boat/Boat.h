@@ -36,7 +36,9 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	UBoatMovementReplicator* MovementReplicator;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UBoxComponent* BoxCollider;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* PlayerWithSailKeyLightCylinderMesh;
+	
 	private:	
 	void MoveForward(float Value);
 	void MoveRight(float Value);

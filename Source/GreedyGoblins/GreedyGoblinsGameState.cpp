@@ -18,7 +18,6 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKey
 
 		ABoat* OldBoatWithSailKey = Cast<ABoat>(OldPlayerWithSailKey->GetPawn());
 		if(!ensure(OldBoatWithSailKey != nullptr)) return;
-
 		OldBoatWithSailKey->SetShowLightCylinder(false);
 	}
 		
@@ -29,11 +28,8 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* PlayerWithSailKey
 
 	UE_LOG(LogTemp, Warning, TEXT("Player number %d stole the sail key"), PlayerWithSailKey->GetPlayerId());
 	
-	//TODO BoatWithSailKey->Mesh->EnableLightCylinder();
-	
 	ABoat* BoatWithSailKey = Cast<ABoat>(PlayerWithSailKey->GetPawn());
 	if(!ensure(BoatWithSailKey != nullptr)) return;
-
 	BoatWithSailKey->SetShowLightCylinder(true);
 }
 
