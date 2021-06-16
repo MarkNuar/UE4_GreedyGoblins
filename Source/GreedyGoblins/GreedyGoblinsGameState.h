@@ -25,7 +25,7 @@ public:
 		return EnragedMode;
 	}
 
-	void UpdateSailKeyOwner(APlayerState* PlayerWithSailKeyParam);
+	void UpdateSailKeyOwner(APlayerState* OldPlayerWithSailKeyParam, APlayerState* PlayerWithSailKeyParam);
 
 	bool HasSailKey(APlayerState* PlayerState) const;
 	

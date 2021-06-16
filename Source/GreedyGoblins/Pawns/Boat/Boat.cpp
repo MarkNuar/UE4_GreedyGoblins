@@ -18,9 +18,10 @@ ABoat::ABoat()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
-	
+
 	MovementComponent = CreateDefaultSubobject<UBoatMovementComponent>(TEXT("MovementComponent"));
-	MovementReplicator = CreateDefaultSubobject<UBoatMovementReplicator>(TEXT("MovementReplicator"));	
+	MovementReplicator = CreateDefaultSubobject<UBoatMovementReplicator>(TEXT("MovementReplicator"));
+	MovementReplicator->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -32,7 +33,8 @@ void ABoat::BeginPlay()
 	if(!ensure(BoxCollider != nullptr)) return;
 	PlayerWithSailKeyLightCylinderMesh = FindComponentByClass<UStaticMeshComponent>();
 	if(!ensure(PlayerWithSailKeyLightCylinderMesh != nullptr)) return;
-	
+	GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 	
 	SetReplicateMovement(false);
 
@@ -142,6 +144,11 @@ void ABoat::LookRightRate(float AxisValue)
 
 void ABoat::Caught()
 {
+	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
+	{
+		GreedyGoblinsGameState->UpdateSailKeyOwner(GetPlayerState(), nullptr);
+	}
+		
 	MovementComponent->SetVelocity(FVector::ZeroVector);
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
@@ -153,14 +160,11 @@ void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 {
 	if(OtherActor->GetClass()->IsChildOf(this->StaticClass()))
 	{
-		AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
-		if (!ensure(GreedyGoblinsGameState != nullptr)) return;
-		
 		APawn* PlayerHitPawn = Cast<APawn>(OtherActor);
 		if (!ensure(PlayerHitPawn != nullptr)) return;
 		if(GreedyGoblinsGameState->HasSailKey(PlayerHitPawn->GetPlayerState()) && GreedyGoblinsGameState->GetCanGetSailKey())
 		{	
-			GreedyGoblinsGameState->UpdateSailKeyOwner(GetPlayerState());
+			GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerHitPawn->GetPlayerState(),GetPlayerState());
 		}
 	}
 }

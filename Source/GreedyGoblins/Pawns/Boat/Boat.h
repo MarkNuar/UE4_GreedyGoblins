@@ -8,6 +8,8 @@
 #include "BoatMovementReplicator.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Pawn.h"
+#include "GreedyGoblins/GreedyGoblinsGameState.h"
+
 #include "Boat.generated.h"
 
 UCLASS()
@@ -38,6 +40,8 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	UBoxComponent* BoxCollider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* PlayerWithSailKeyLightCylinderMesh;
+	UPROPERTY()
+	AGreedyGoblinsGameState* GreedyGoblinsGameState;
 	
 	private:	
 	void MoveForward(float Value);

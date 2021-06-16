@@ -55,7 +55,7 @@ void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Other
 		GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
 		if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 	
-		GreedyGoblinsGameState->UpdateSailKeyOwner(PlayerStateWithSailKey);
+		GreedyGoblinsGameState->UpdateSailKeyOwner(nullptr,PlayerStateWithSailKey);
 	
 		this->Destroy();
 	}

@@ -11,7 +11,7 @@ ALightHouse::ALightHouse()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	if(!ensure(Root)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *Root->GetName());
 	RootComponent = Root;
@@ -77,10 +77,8 @@ void ALightHouse::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	if(!ensure(OtherActor)) return;
 	if(!ensure(OtherComp)) return;
 
-	UE_LOG(LogTemp, Warning, TEXT("SENTIAMO LA HIT"));
 	if(OtherComp->GetClass()->IsChildOf(USphereComponent::StaticClass()) && BoatToChase == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("LA HIT E LA BARCA"));
 		if(!ensure(Cast<ABoat>(OtherActor))) return;
 		BoatToChase = Cast<ABoat>(OtherActor);
 	}
