@@ -58,7 +58,7 @@ void UBoatMovementReplicator::UpdateServerState(const FBoatMove& Move) //
 	ServerState.Velocity = MovementComponent->GetVelocity();
 }
 
-void UBoatMovementReplicator::ClientTick(float DeltaTime) //in order to correctly see the server from the client POV (simulated proxy)
+void UBoatMovementReplicator::ClientTick(float DeltaTime) // in order to smooth (on client) between the server state updates
 {
 	ClientTimeSinceUpdate += DeltaTime;
 

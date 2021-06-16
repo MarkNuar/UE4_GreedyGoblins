@@ -9,7 +9,6 @@
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
-#include "GreedyGoblins/Actors/SailKey.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -21,7 +20,9 @@ ABoat::ABoat()
 	bReplicates = true;
 
 	MovementComponent = CreateDefaultSubobject<UBoatMovementComponent>(TEXT("MovementComponent"));
+	if(!ensure(MovementComponent != nullptr)) return;
 	MovementReplicator = CreateDefaultSubobject<UBoatMovementReplicator>(TEXT("MovementReplicator"));
+	if(!ensure(MovementReplicator != nullptr)) return;
 	MovementReplicator->SetIsReplicated(true);
 }
 

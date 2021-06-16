@@ -11,15 +11,20 @@ ALightHouse::ALightHouse()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	if(!ensure(Root)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *Root->GetName());
-	RootComponent = Root;
-	
+	bReplicates = true;
+
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	if(!ensure(StaticMeshComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *StaticMeshComponent->GetName());
-	StaticMeshComponent->SetupAttachment(RootComponent);
+	RootComponent = StaticMeshComponent;
 
+	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
+	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
+	SplineComponent->SetupAttachment(RootComponent);
+	
+	PatrolTargetTransform = CreateDefaultSubobject<USceneComponent>(TEXT("PatrolTargetTransform"));
+	if(!ensure(PatrolTargetTransform)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetTransform->GetName());
+	PatrolTargetTransform->SetupAttachment(RootComponent);
+	
 	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
 	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
 	SpotLightComponent->SetupAttachment(StaticMeshComponent);
@@ -27,14 +32,11 @@ ALightHouse::ALightHouse()
 	LightConeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightConeMeshComponent"));
 	if(!ensure(LightConeMeshComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *LightConeMeshComponent->GetName());
 	LightConeMeshComponent->SetupAttachment(SpotLightComponent);
+
+	MovementReplicator = CreateDefaultSubobject<ULighthouseMovementReplicator>(TEXT("LightHouseMovementReplicator"));
+	if(!ensure(MovementReplicator != nullptr)) return;
+	MovementReplicator->SetIsReplicated(true);
 	
-	PatrolTargetTransform = CreateDefaultSubobject<USceneComponent>(TEXT("PatrolTargetTransform"));
-	if(!ensure(PatrolTargetTransform)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetTransform->GetName());
-	PatrolTargetTransform->SetupAttachment(RootComponent);
-	
-	SplineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("SplineComponent"));
-	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
-	SplineComponent->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -44,6 +46,7 @@ void ALightHouse::BeginPlay()
 
 	if(HasAuthority())
 	{
+		NetUpdateFrequency = 1;
 		LightConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
 		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);
 	}
@@ -56,8 +59,7 @@ void ALightHouse::Tick(float DeltaTime)
 	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
 	const FVector Direction = PatrolTargetTransform->GetComponentLocation() - SpotLightComponent->GetComponentLocation();
 	const FRotator Rotation = Direction.Rotation();
-	SpotLightComponent->SetWorldRotation(Rotation);
-	
+	SpotLightComponent->SetWorldRotation(Rotation);	
 }
 
 // Called to bind functionality to input

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 
+#include "LighthouseMovementReplicator.h"
 #include "Components/SplineComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "GameFramework/Pawn.h"
@@ -20,11 +21,6 @@ public:
 	// Sets default values for this pawn's properties
 	ALightHouse();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -32,6 +28,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	FVector GetPositionAlongSpline() const;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ULighthouseMovementReplicator* MovementReplicator;
 	
 	USceneComponent* GetPatrolTargetTransform() const
 	{
@@ -52,30 +51,30 @@ public:
 	{
 		return BoatToChase;
 	}
-
-private:
-
-	// Light speed in m/s
-	UPROPERTY(EditAnywhere)
-	float LightSpeed = 5.0f;
-
-	// Max Distance possible from Patrol Target in METERS
-	UPROPERTY(EditAnywhere)
-	float MaxPatrolTargetDistance = 200;
-
-public:
+	
 	float GetMaxPatrolTargetDistance() const
 	{
 		return MaxPatrolTargetDistance;
 	}
 
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 private:
+
+	// Light speed in m/s
+	UPROPERTY(EditAnywhere)
+	float LightSpeed = 20.0f;
+
+	// Max Distance possible from Patrol Target in METERS
+	UPROPERTY(EditAnywhere)
+	float MaxPatrolTargetDistance = 200;
+
 	UPROPERTY()
 	ABoat* BoatToChase;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
-	USceneComponent* Root;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* StaticMeshComponent;
 
