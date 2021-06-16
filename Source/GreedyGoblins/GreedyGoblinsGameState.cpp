@@ -9,6 +9,13 @@
 #include "Pawns/Boat/Boat.h"
 #define ECC_PLAYER_WITH_SAIL_KEY ECC_GameTraceChannel1
 
+AGreedyGoblinsGameState::AGreedyGoblinsGameState()
+{
+	const ConstructorHelpers::FClassFinder<ASailKey> SailKeyBPClass(TEXT("/Game/Blueprint/Actors/BP_SailKey"));
+	if(!ensure(SailKeyBPClass.Class!=nullptr)) return;
+	SailKeyClass = SailKeyBPClass.Class; 
+}
+
 void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSailKeyParam, APlayerState* PlayerWithSailKeyParam)
 {
 	PlayerWithSailKey = PlayerWithSailKeyParam;	
@@ -41,11 +48,15 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSail
 		if(!ensure(OldBoatWithSailKey != nullptr)) return;
 		OldBoatWithSailKey->SetShowLightCylinder(false);
 		OldBoatWithSailKey = nullptr;
-		
-		//TODO SPAWN ACTOR (GENERATE) NEW SAIL OF KEY
 	}
 
 	UpdatePearlShield();
+}
+
+void AGreedyGoblinsGameState::DropSailKeyAtLocation(FVector Location)
+{
+	UpdateSailKeyOwner(PlayerWithSailKey, nullptr);
+	GetWorld()->SpawnActor<ASailKey>(SailKeyClass, Location, FRotator(0, 0, 0));
 }
 
 bool AGreedyGoblinsGameState::HasSailKey(APlayerState* PlayerState) const

@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "GameFramework/Pawn.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
+#include "GreedyGoblins/Actors/SailKey.h"
 
 #include "Boat.generated.h"
 
@@ -51,7 +52,7 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	void LookUpRate(float Value);
 	void LookRightRate(float Value);
 	void ToggleFastMode();
-
+	
 	UPROPERTY(Replicated)
 	bool ShowLightCylinder = false;
 	

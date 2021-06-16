@@ -16,7 +16,8 @@ ASailKey::ASailKey()
 	if (!ensure(TriggerVolume != nullptr)) return;
 	SailMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("SailMesh"));
 	if (!ensure(SailMesh != nullptr)) return;
-	
+
+	RootComponent = TriggerVolume;
     SailMesh->SetupAttachment(TriggerVolume);
 
 	if(HasAuthority())

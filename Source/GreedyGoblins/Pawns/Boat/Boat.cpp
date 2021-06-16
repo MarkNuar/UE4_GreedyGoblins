@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
+#include "GreedyGoblins/Actors/SailKey.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -144,16 +145,18 @@ void ABoat::LookRightRate(float AxisValue)
 
 void ABoat::Caught()
 {
-	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
-	{
-		GreedyGoblinsGameState->UpdateSailKeyOwner(GetPlayerState(), nullptr);
-	}
-		
+	FVector CurrentActorPosition = GetActorLocation();
+	
 	MovementComponent->SetVelocity(FVector::ZeroVector);
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
 	AActor* Spawn = FoundActors[FMath::RandRange(0, FoundActors.Num()-1)];
 	this->SetActorTransform(Spawn->GetTransform());
+
+	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
+	{
+		GreedyGoblinsGameState->DropSailKeyAtLocation(CurrentActorPosition);
+	}
 }
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)

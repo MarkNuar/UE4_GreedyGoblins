@@ -7,6 +7,7 @@
 #include "GameFramework/GameState.h"
 #include "GreedyGoblinsGameState.generated.h"
 
+class ASailKey;
 /**
  * 
  */
@@ -16,6 +17,9 @@ class GREEDYGOBLINS_API AGreedyGoblinsGameState : public AGameStateBase
 	GENERATED_BODY()
 
 public:
+
+	AGreedyGoblinsGameState();
+	
 	bool GetCanGetSailKey() const;
 	
 	void SetCanGetSailKey();
@@ -27,6 +31,8 @@ public:
 
 	void UpdateSailKeyOwner(APlayerState* OldPlayerWithSailKeyParam, APlayerState* PlayerWithSailKeyParam);
 
+	void DropSailKeyAtLocation(FVector Location);
+	
 	bool HasSailKey(APlayerState* PlayerState) const;
 	
 private:
@@ -38,6 +44,8 @@ private:
 	UPROPERTY()
 	APlayerState* OldPlayerWithSailKey = nullptr;
 
+	TSubclassOf<ASailKey> SailKeyClass;
+	
 	UPROPERTY(EditAnywhere)
 	float SailKeyHitDelay = 2.0f;
 	
@@ -49,5 +57,5 @@ private:
 	void StartSailKeyHitDelay();
 
 	void UpdatePearlShield() const;
-	
+
 };
