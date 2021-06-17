@@ -6,6 +6,7 @@
 #include "DrawDebugHelpers.h"
 #include "ToolBuilderUtil.h"
 #include "Components/BoxComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/PlayerStart.h"
 #include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
@@ -124,6 +125,12 @@ void ABoat::MoveRight(float Value)
 	MovementComponent->SetSteeringThrow(Value);
 }
 
+void ABoat::ToggleFastMode()
+{
+	if (MovementComponent == nullptr) return;
+	MovementComponent->ToggleFastMode();
+}
+
 void ABoat::LookUp(float AxisValue)
 {
 	AddControllerPitchInput(AxisValue);
@@ -149,9 +156,24 @@ void ABoat::Caught()
 	FVector CurrentActorPosition = GetActorLocation();
 	
 	MovementComponent->SetVelocity(FVector::ZeroVector);
+
 	TArray<AActor*> FoundActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
-	AActor* Spawn = FoundActors[FMath::RandRange(0, FoundActors.Num()-1)];
+	// todo SHUFFLE PLAYER START LIST
+	APlayerStart* Spawn = nullptr;
+	
+	for(AActor* Actor : FoundActors)
+	{
+		Spawn = Cast<APlayerStart>(Actor);
+		if(!ensure(Spawn)) return;
+		UCapsuleComponent* Capsule = Spawn->GetCapsuleComponent();
+		if(!ensure(Capsule)) return;
+		const TArray<FOverlapInfo> OverlapInfos = Capsule->GetOverlapInfos();
+		if(OverlapInfos.Num() == 0)
+			break;
+	}
+	
+	if(!ensure(Spawn)) return;
 	this->SetActorTransform(Spawn->GetTransform());
 
 	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
@@ -172,10 +194,4 @@ void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 		}
 	}
 }
-
-void ABoat::ToggleFastMode()
-{
-	MovementComponent->ToggleFastMode();
-}
-
 

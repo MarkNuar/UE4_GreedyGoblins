@@ -3,6 +3,9 @@
 
 #include "BoatMovementComponent.h"
 
+#include "Boat.h"
+#include "DrawDebugHelpers.h"
+
 // Sets default values for this component's properties
 UBoatMovementComponent::UBoatMovementComponent()
 {
@@ -39,10 +42,43 @@ void UBoatMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
 	}
+
+	const FString Bool = bIsInFastMode ? TEXT("true") : TEXT("false");
+	const FString LastMoveBool = LastMove.bIsInFastMode ? TEXT("true") : TEXT("false");
+	DrawDebugString(GetWorld(), FVector(0, 0, 500), "bIsInFastMode " + Bool,GetOwner(), FColor::Green, DeltaTime);
+	DrawDebugString(GetWorld(), FVector(0, 0, 350), "Last move bIsInFastMode " + LastMoveBool,GetOwner(), FColor::Green, DeltaTime);
+}
+
+FBoatMove UBoatMovementComponent::CreateMove(float DeltaTime) const
+{
+	FBoatMove Move;
+	Move.DeltaTime = DeltaTime;
+	Move.SteeringThrow = SteeringThrow;
+	Move.bIsInFastMode = bIsInFastMode;
+	Move.Throttle = Throttle;
+	Move.Time = GetWorld()->TimeSeconds;
+
+	return Move;
 }
 
 void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server simulates the moves of the other clients 
 {
+	UpdateVelocity(Move);
+	UpdateNoiseAreaRadius(Move.bIsInFastMode);
+	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
+	UpdateLocationFromVelocity(Move.DeltaTime);
+}
+
+void UBoatMovementComponent::UpdateVelocity(const FBoatMove& Move)
+{
+	if(Move.bIsInFastMode)
+	{
+		MaxSpeed = FastModeMaxSpeed;
+	}
+	else
+	{
+		MaxSpeed = StealthModeMaxSpeed;
+	}
 	if(abs(Move.Throttle) < SMALL_NUMBER && Velocity.Size() > 0)
 	{
 		FVector PrevVel = Velocity;
@@ -60,35 +96,6 @@ void UBoatMovementComponent::SimulateMove(const FBoatMove& Move) //The server si
 	
 	Velocity = Velocity.GetClampedToMaxSize(MaxSpeed);
 	Speed = Velocity.Size();
-
-	UpdateNoiseAreaRadius();
-	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
-	UpdateLocationFromVelocity(Move.DeltaTime);
-}
-
-void UBoatMovementComponent::ToggleFastMode()
-{
-	if(!bIsInFastMode)
-	{
-		bIsInFastMode = true;
-		MaxSpeed = FastModeMaxSpeed;
-	}
-	else
-	{
-		bIsInFastMode = false;
-		MaxSpeed = StealthModeMaxSpeed;
-	}
-}
-
-FBoatMove UBoatMovementComponent::CreateMove(float DeltaTime) const
-{
-	FBoatMove Move;
-	Move.DeltaTime = DeltaTime;
-	Move.SteeringThrow = SteeringThrow;
-	Move.Throttle = Throttle;
-	Move.Time = GetWorld()->TimeSeconds;
-
-	return Move;
 }
 
 void UBoatMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
@@ -135,11 +142,11 @@ void UBoatMovementComponent::ApplyRotation(float DeltaTime, float LocalSteeringT
 	GetOwner()->AddActorWorldRotation(RotationDelta);
 }
 
-void UBoatMovementComponent::UpdateNoiseAreaRadius() const
+void UBoatMovementComponent::UpdateNoiseAreaRadius(bool bLocalIsInFastMode) const
 {
 	float Radius;
 	
-	if(bIsInFastMode)
+	if(bLocalIsInFastMode)
 	{
 		Radius = Speed * MaxFastModeNoiseAreaRadius / (0.35 * MaxSpeed);
 		Radius = FMath::Clamp(Radius, 0.f, MaxFastModeNoiseAreaRadius);
@@ -151,6 +158,18 @@ void UBoatMovementComponent::UpdateNoiseAreaRadius() const
 	}
 	
 	NoiseAreaCollider->SetSphereRadius(Radius * 100);
+}
+
+void UBoatMovementComponent::ToggleFastMode()
+{
+	if(!bIsInFastMode)
+	{
+		bIsInFastMode = true;
+	}
+	else
+	{
+		bIsInFastMode = false;
+	}
 }
 
 

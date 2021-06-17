@@ -50,16 +50,17 @@ void ULighthouseMovementReplicator::TickComponent(float DeltaTime, ELevelTick Ti
 
 void ULighthouseMovementReplicator::OnRep_ServerState() // after server replicated serverstate to everybody (if i'm a client seen from another client's POV)
 {
-	if(!ensure(PatrolTargetComponent != nullptr))
-		return;
-	
+	// if(!ensure(PatrolTargetComponent != nullptr))
+	// 	return;
+	if(PatrolTargetComponent)
+	{
 		ClientTimeBetweenLastUpdates = ClientTimeSinceUpdate;
-		ClientTimeSinceUpdate = 0;
+        ClientTimeSinceUpdate = 0;
 
-		ClientStartTransform.SetLocation(PatrolTargetComponent->GetComponentLocation()); //client sets its move after server validated it, taking it from the serverstate struct */
-	
-		GetOwner()->SetActorTransform(PatrolTargetServerTransform);
-	
+        ClientStartTransform.SetLocation(PatrolTargetComponent->GetComponentLocation()); //client sets its move after server validated it, taking it from the serverstate struct */
+    
+        GetOwner()->SetActorTransform(PatrolTargetServerTransform);
+	}
 }
 
 void ULighthouseMovementReplicator::ClientTick(float DeltaTime)

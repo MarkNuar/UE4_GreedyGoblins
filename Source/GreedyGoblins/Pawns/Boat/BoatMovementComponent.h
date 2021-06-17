@@ -18,6 +18,8 @@ struct FBoatMove
 	UPROPERTY()
 	float SteeringThrow;
 	UPROPERTY()
+	bool bIsInFastMode;
+	UPROPERTY()
 	float DeltaTime;
 	UPROPERTY()
 	float Time;
@@ -47,13 +49,14 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	void SimulateMove(const FBoatMove& Move);
-	void ToggleFastMode();
+	
 	
 	FVector GetVelocity() const { return Velocity; }
 	void SetVelocity(FVector Val) { Velocity = Val; }
 
 	void SetThrottle(float Val) { Throttle = Val; }
 	void SetSteeringThrow(float Val) { SteeringThrow = Val; }
+	void ToggleFastMode();
 
 	FBoatMove GetLastMove() const { return LastMove; }
 
@@ -62,10 +65,12 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	
 	private:
 
+	void UpdateVelocity(const FBoatMove& Move);
 	void ApplyRotation(float DeltaTime, float SteeringThrow);
 	void UpdateLocationFromVelocity(float DeltaTime);
 	FBoatMove CreateMove(float DeltaTime) const;
-	void UpdateNoiseAreaRadius() const;
+	void UpdateNoiseAreaRadius(bool bIsInFastMode) const;
+	
 	bool bIsInFastMode = false;
 	
 	UPROPERTY(EditAnywhere)
