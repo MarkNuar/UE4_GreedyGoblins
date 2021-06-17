@@ -134,10 +134,10 @@ void UBoatMovementComponent::OnWallHit(FVector HitNormal, float DeltaTime)
 
 void UBoatMovementComponent::ApplyRotation(float DeltaTime, float LocalSteeringThrow)
 {
-	float DeltaLocation = FVector::DotProduct(GetOwner()->GetActorForwardVector(), Velocity) * DeltaTime;
-	float RotationAngle = DeltaLocation / MinTurningRadius * LocalSteeringThrow;
-    FQuat RotationDelta(GetOwner()->GetActorUpVector(), RotationAngle);
-    
+	const float DeltaLocation = FVector::DotProduct(GetOwner()->GetActorForwardVector(), Velocity.GetSafeNormal()) * RotationSpeed * DeltaTime;
+	const float RotationAngle = (DeltaLocation / MinTurningRadius * LocalSteeringThrow);
+    const FQuat RotationDelta(GetOwner()->GetActorUpVector(), RotationAngle);
+
     Velocity = RotationDelta.RotateVector(Velocity);
 	GetOwner()->AddActorWorldRotation(RotationDelta);
 }

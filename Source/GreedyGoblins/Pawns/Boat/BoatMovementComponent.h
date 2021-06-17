@@ -87,6 +87,10 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	UPROPERTY(EditAnywhere)
 	float FastModeMaxSpeed = 50;
 
+	// Rotation speed of the ship, try values around 25
+	UPROPERTY(EditAnywhere)
+	float RotationSpeed = 25; 
+
 	// Radius of the noise area in stealth mode in meters
 	UPROPERTY(EditAnywhere)
 	float MaxStealthModeNoiseAreaRadius = 50;

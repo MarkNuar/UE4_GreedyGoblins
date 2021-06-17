@@ -77,7 +77,6 @@ private:
 	UFUNCTION()
 	void OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
-	APlayerStart* ChooseStart(AController* Player);
 };
 
 

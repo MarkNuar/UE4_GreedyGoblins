@@ -79,13 +79,7 @@ void ABoat::Tick(float DeltaTime)
 	if(ShowLightCylinder)
 	{
 		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(false);
-		DrawDebugString(GetWorld(), FVector(0, 0, -20), "I HAVE THE SAIL KEY AGAGGAHAGAGGGA", this, FColor::White, DeltaTime);
-		
-		UEngine* Engine = GetGameInstance()->GetEngine();
-		if(!ensure(Engine!=nullptr)) return;
-		Engine->AddOnScreenDebugMessage(0, 3, FColor::Green, TEXT("PLAYER NUM " + FString::FromInt(GetPlayerState()->GetPlayerId()) + "has the sail key"));
-		Engine->AddOnScreenDebugMessage(1, 3, FColor::Green, TEXT("PLAYER NUM " + FString::FromInt(GetPlayerState()->GetPlayerId()) + "has the sail key"));
-		Engine->AddOnScreenDebugMessage(2, 3, FColor::Green, TEXT("PLAYER NUM " + FString::FromInt(GetPlayerState()->GetPlayerId()) + "has the sail key"));
+		DrawDebugString(GetWorld(), FVector(0, 0, -20), "I Have the sail key", this, FColor::White, DeltaTime);
 	}
 	else
 	{
@@ -94,7 +88,7 @@ void ABoat::Tick(float DeltaTime)
 	
 	if(GetPlayerState() != nullptr)
 	{
-		DrawDebugString(GetWorld(), FVector(0, 0, 20), "Player number " + FString::FromInt(GetPlayerState()->GetPlayerId()),this, FColor::White, DeltaTime);
+		DrawDebugString(GetWorld(), FVector(0, 0, 150), "Player number " + FString::FromInt(GetPlayerState()->GetPlayerId()),this, FColor::White, DeltaTime);
 	}
 }
 
@@ -162,26 +156,7 @@ void ABoat::Caught()
 	FVector CurrentActorPosition = GetActorLocation();
 
 	MovementComponent->SetVelocity(FVector::ZeroVector);
-
-	// TArray<AActor*> FoundActors;
-	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
-	// // todo SHUFFLE PLAYER START LIST
-	// APlayerStart* Spawn = nullptr;
-	//
-	// for(AActor* Actor : FoundActors)
-	// {
-	// 	Spawn = Cast<APlayerStart>(Actor);
-	// 	if(!ensure(Spawn)) return;
-	// 	UCapsuleComponent* Capsule = Spawn->GetCapsuleComponent();
-	// 	if(!ensure(Capsule)) return;
-	// 	const TArray<FOverlapInfo> OverlapInfos = Capsule->GetOverlapInfos();
-	// 	UE_LOG(LogTemp, Warning, TEXT("%d"), OverlapInfos.Num());
-	// 	if(OverlapInfos.Num() == 0)
-	// 		break;
-	// }
-
-	AActor* FreeSpawn = ChooseStart(GetController());
-
+	AActor* FreeSpawn = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController());
 	if(!ensure(FreeSpawn)) return;
 	this->SetActorTransform(FreeSpawn->GetTransform());
 
@@ -189,45 +164,6 @@ void ABoat::Caught()
 	{
 		GreedyGoblinsGameState->DropSailKeyAtLocation(CurrentActorPosition);
 	}
-}
-
-APlayerStart* ABoat::ChooseStart(AController* Player)
-{
-	// Choose a player start
-	APlayerStart* FoundPlayerStart = nullptr;
-	UClass* PawnClass = GetWorld()->GetAuthGameMode()->GetDefaultPawnClassForController(Player);
-	APawn* PawnToFit = PawnClass ? PawnClass->GetDefaultObject<APawn>() : nullptr;
-	TArray<APlayerStart*> UnOccupiedStartPoints;
-	TArray<APlayerStart*> OccupiedStartPoints;
-	UWorld* World = GetWorld();
-	for (TActorIterator<APlayerStart> It(World); It; ++It)
-	{
-		APlayerStart* PlayerStart = *It;
-
-		FVector ActorLocation = PlayerStart->GetActorLocation();
-		const FRotator ActorRotation = PlayerStart->GetActorRotation();
-		if (!World->EncroachingBlockingGeometry(PawnToFit, ActorLocation, ActorRotation))
-		{
-			UnOccupiedStartPoints.Add(PlayerStart);
-		}
-		else if (World->FindTeleportSpot(PawnToFit, ActorLocation, ActorRotation))
-		{
-			OccupiedStartPoints.Add(PlayerStart);
-		}
-		
-	}
-	if (FoundPlayerStart == nullptr)
-	{
-		if (UnOccupiedStartPoints.Num() > 0)
-		{
-			FoundPlayerStart = UnOccupiedStartPoints[FMath::RandRange(0, UnOccupiedStartPoints.Num() - 1)];
-		}
-		else if (OccupiedStartPoints.Num() > 0)
-		{
-			FoundPlayerStart = OccupiedStartPoints[FMath::RandRange(0, OccupiedStartPoints.Num() - 1)];
-		}
-	}
-	return FoundPlayerStart;
 }
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
