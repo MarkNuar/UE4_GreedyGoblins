@@ -6,6 +6,7 @@
 #include <assert.h>
 
 #include "DrawDebugHelpers.h"
+#include "EngineUtils.h"
 #include "ToolBuilderUtil.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -15,6 +16,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
+class APlayerStartPIE;
 // Sets default values
 ABoat::ABoat()
 {
@@ -178,7 +180,7 @@ void ABoat::Caught()
 	// 		break;
 	// }
 
-	AActor* FreeSpawn = GetWorld()->GetAuthGameMode()->ChoosePlayerStart(GetController());
+	AActor* FreeSpawn = ChooseStart(GetController());
 
 	if(!ensure(FreeSpawn)) return;
 	this->SetActorTransform(FreeSpawn->GetTransform());
@@ -187,6 +189,45 @@ void ABoat::Caught()
 	{
 		GreedyGoblinsGameState->DropSailKeyAtLocation(CurrentActorPosition);
 	}
+}
+
+APlayerStart* ABoat::ChooseStart(AController* Player)
+{
+	// Choose a player start
+	APlayerStart* FoundPlayerStart = nullptr;
+	UClass* PawnClass = GetWorld()->GetAuthGameMode()->GetDefaultPawnClassForController(Player);
+	APawn* PawnToFit = PawnClass ? PawnClass->GetDefaultObject<APawn>() : nullptr;
+	TArray<APlayerStart*> UnOccupiedStartPoints;
+	TArray<APlayerStart*> OccupiedStartPoints;
+	UWorld* World = GetWorld();
+	for (TActorIterator<APlayerStart> It(World); It; ++It)
+	{
+		APlayerStart* PlayerStart = *It;
+
+		FVector ActorLocation = PlayerStart->GetActorLocation();
+		const FRotator ActorRotation = PlayerStart->GetActorRotation();
+		if (!World->EncroachingBlockingGeometry(PawnToFit, ActorLocation, ActorRotation))
+		{
+			UnOccupiedStartPoints.Add(PlayerStart);
+		}
+		else if (World->FindTeleportSpot(PawnToFit, ActorLocation, ActorRotation))
+		{
+			OccupiedStartPoints.Add(PlayerStart);
+		}
+		
+	}
+	if (FoundPlayerStart == nullptr)
+	{
+		if (UnOccupiedStartPoints.Num() > 0)
+		{
+			FoundPlayerStart = UnOccupiedStartPoints[FMath::RandRange(0, UnOccupiedStartPoints.Num() - 1)];
+		}
+		else if (OccupiedStartPoints.Num() > 0)
+		{
+			FoundPlayerStart = OccupiedStartPoints[FMath::RandRange(0, OccupiedStartPoints.Num() - 1)];
+		}
+	}
+	return FoundPlayerStart;
 }
 
 void ABoat::OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)

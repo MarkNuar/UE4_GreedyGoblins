@@ -13,6 +13,7 @@
 
 #include "Boat.generated.h"
 
+class APlayerStart;
 UCLASS()
 class GREEDYGOBLINS_API ABoat : public APawn
 {
@@ -75,6 +76,8 @@ private:
 	
 	UFUNCTION()
 	void OnBoatHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
+	APlayerStart* ChooseStart(AController* Player);
 };
 
 
