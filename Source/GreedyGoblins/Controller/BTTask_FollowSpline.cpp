@@ -11,6 +11,7 @@ UBTTask_FollowSpline::UBTTask_FollowSpline()
 {
 	NodeName = TEXT("Follow Spline");
 	bNotifyTick = true;
+	bCreateNodeInstance = true;
 }
 
 EBTNodeResult::Type UBTTask_FollowSpline::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

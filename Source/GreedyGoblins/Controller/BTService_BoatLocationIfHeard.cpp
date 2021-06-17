@@ -10,6 +10,7 @@
 UBTService_BoatLocationIfHeard::UBTService_BoatLocationIfHeard()
 {
 	NodeName = "Update Boat Location If Heard";
+	bCreateNodeInstance = true;
 }
 
 

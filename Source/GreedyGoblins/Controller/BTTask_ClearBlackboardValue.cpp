@@ -8,6 +8,7 @@
 UBTTask_ClearBlackboardValue::UBTTask_ClearBlackboardValue()
 {
 	NodeName = TEXT("Clear Blackboard Value");
+	bCreateNodeInstance = true;
 }
 
 

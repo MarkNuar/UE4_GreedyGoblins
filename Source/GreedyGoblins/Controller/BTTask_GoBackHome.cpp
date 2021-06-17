@@ -10,6 +10,7 @@ UBTTask_GoBackHome::UBTTask_GoBackHome()
 {
 	NodeName = TEXT("Go Back Home");
 	bNotifyTick = true;
+	bCreateNodeInstance = true;
 }
 
 EBTNodeResult::Type UBTTask_GoBackHome::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

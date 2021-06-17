@@ -11,6 +11,7 @@ UBTTask_ChaseBoat::UBTTask_ChaseBoat()
 {
 	NodeName = "Chase Boat";
 	bNotifyTick = true;
+	bCreateNodeInstance = true;
 }
 
 EBTNodeResult::Type UBTTask_ChaseBoat::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
