@@ -3,6 +3,8 @@
 
 #include "Boat.h"
 
+#include <assert.h>
+
 #include "DrawDebugHelpers.h"
 #include "ToolBuilderUtil.h"
 #include "Components/BoxComponent.h"
@@ -153,28 +155,33 @@ void ABoat::LookRightRate(float AxisValue)
 
 void ABoat::Caught()
 {
+	assert(HasAuthority()); // this should be true
+
 	FVector CurrentActorPosition = GetActorLocation();
-	
+
 	MovementComponent->SetVelocity(FVector::ZeroVector);
 
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
-	// todo SHUFFLE PLAYER START LIST
-	APlayerStart* Spawn = nullptr;
-	
-	for(AActor* Actor : FoundActors)
-	{
-		Spawn = Cast<APlayerStart>(Actor);
-		if(!ensure(Spawn)) return;
-		UCapsuleComponent* Capsule = Spawn->GetCapsuleComponent();
-		if(!ensure(Capsule)) return;
-		const TArray<FOverlapInfo> OverlapInfos = Capsule->GetOverlapInfos();
-		if(OverlapInfos.Num() == 0)
-			break;
-	}
-	
-	if(!ensure(Spawn)) return;
-	this->SetActorTransform(Spawn->GetTransform());
+	// TArray<AActor*> FoundActors;
+	// UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FoundActors);
+	// // todo SHUFFLE PLAYER START LIST
+	// APlayerStart* Spawn = nullptr;
+	//
+	// for(AActor* Actor : FoundActors)
+	// {
+	// 	Spawn = Cast<APlayerStart>(Actor);
+	// 	if(!ensure(Spawn)) return;
+	// 	UCapsuleComponent* Capsule = Spawn->GetCapsuleComponent();
+	// 	if(!ensure(Capsule)) return;
+	// 	const TArray<FOverlapInfo> OverlapInfos = Capsule->GetOverlapInfos();
+	// 	UE_LOG(LogTemp, Warning, TEXT("%d"), OverlapInfos.Num());
+	// 	if(OverlapInfos.Num() == 0)
+	// 		break;
+	// }
+
+	AActor* FreeSpawn = GetWorld()->GetAuthGameMode()->ChoosePlayerStart(GetController());
+
+	if(!ensure(FreeSpawn)) return;
+	this->SetActorTransform(FreeSpawn->GetTransform());
 
 	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
 	{
