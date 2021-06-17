@@ -22,6 +22,8 @@ EBTNodeResult::Type UBTTask_ChaseBoat::ExecuteTask(UBehaviorTreeComponent& Owner
 	MaxPatrolTargetDistance = LightHouse->GetMaxPatrolTargetDistance();
 	PatrolTargetTransform = LightHouse->GetPatrolTargetTransform();
 	
+	// todo LightHouse-> start chasing cambia il colore in rosso
+	
 	return EBTNodeResult::InProgress;
 }
 

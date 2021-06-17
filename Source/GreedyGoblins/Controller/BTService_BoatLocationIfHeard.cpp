@@ -53,6 +53,7 @@ void UBTService_BoatLocationIfHeard::TickNode(UBehaviorTreeComponent& OwnerComp,
 		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
 		FName BoatLocation = TEXT("BoatLocation");
 		OwnerComp.GetBlackboardComponent()->ClearValue(BoatLocation);
+		// todo lighthouse -> stop chasing, colore diventa verde/arancione, dipende da enraged
 	}
 	
 }
