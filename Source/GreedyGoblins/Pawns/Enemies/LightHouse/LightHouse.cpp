@@ -46,7 +46,7 @@ void ALightHouse::BeginPlay()
 
 	if(HasAuthority())
 	{
-		NetUpdateFrequency = 1;
+		NetUpdateFrequency = 100;
 		LightConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
 		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);
 	}

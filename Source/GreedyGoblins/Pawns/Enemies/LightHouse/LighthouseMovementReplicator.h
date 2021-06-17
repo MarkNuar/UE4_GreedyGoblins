@@ -39,7 +39,7 @@ public:
 
 private:
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	USceneComponent* PatrolTargetComponent;
 
 	UPROPERTY(ReplicatedUsing= OnRep_ServerState) //OnRep_Serverstate is a callback function called only AFTER ServerState has been replicated

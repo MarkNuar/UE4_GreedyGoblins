@@ -3,6 +3,7 @@
 
 #include "LighthouseMovementReplicator.h"
 
+#include "LightHouse.h"
 #include "Net/UnrealNetwork.h"
 
 // Sets default values for this component's properties
@@ -20,7 +21,9 @@ void ULighthouseMovementReplicator::BeginPlay()
 {
 	Super::BeginPlay();
 
-	PatrolTargetComponent = GetOwner()->FindComponentByClass<USceneComponent>();
+	ALightHouse* LightHouse = Cast<ALightHouse>(GetOwner());
+	if(!ensure(LightHouse)) return;	
+	PatrolTargetComponent = LightHouse->GetPatrolTargetTransform();
 	if(!ensure(PatrolTargetComponent != nullptr)) return;
 }
 
@@ -38,7 +41,7 @@ void ULighthouseMovementReplicator::TickComponent(float DeltaTime, ELevelTick Ti
 	// we are the server and in control of the pawn
 	if(GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
-		PatrolTargetServerTransform = PatrolTargetComponent->GetComponentTransform(); 
+		PatrolTargetServerTransform = PatrolTargetComponent->GetComponentTransform();
 	}
 
 	// we are somebody else seen by the client (i.e the server or other clients)
@@ -57,9 +60,7 @@ void ULighthouseMovementReplicator::OnRep_ServerState() // after server replicat
 		ClientTimeBetweenLastUpdates = ClientTimeSinceUpdate;
         ClientTimeSinceUpdate = 0;
 
-        ClientStartTransform.SetLocation(PatrolTargetComponent->GetComponentLocation()); //client sets its move after server validated it, taking it from the serverstate struct */
-    
-        GetOwner()->SetActorTransform(PatrolTargetServerTransform);
+        ClientStartTransform = PatrolTargetComponent->GetComponentTransform(); //client sets its move after server validated it, taking it from the serverstate struct */
 	}
 }
 
@@ -70,7 +71,7 @@ void ULighthouseMovementReplicator::ClientTick(float DeltaTime)
 	float LerpRatio = ClientTimeSinceUpdate / ClientTimeBetweenLastUpdates;
 
 	FLinearSpline Spline = CreateSpline();
-	
+
 	InterpolateLocation(Spline, LerpRatio);	
 }
 
@@ -86,7 +87,7 @@ FLinearSpline ULighthouseMovementReplicator::CreateSpline()
 
 void ULighthouseMovementReplicator::InterpolateLocation(const FLinearSpline& Spline, float LerpRatio) const
 {
-	FVector NewLocation = Spline.InterpolateLocation(LerpRatio);
+	const FVector NewLocation = Spline.InterpolateLocation(LerpRatio);
 	PatrolTargetComponent->SetWorldLocation(NewLocation);	
 }
 
