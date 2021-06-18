@@ -7,13 +7,17 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Pawns/Boat/Boat.h"
+#include "Pawns/Enemies/LightHouse/LightHouse.h"
 #define ECC_PLAYER_WITH_SAIL_KEY ECC_GameTraceChannel1
 
 AGreedyGoblinsGameState::AGreedyGoblinsGameState()
 {
 	const ConstructorHelpers::FClassFinder<ASailKey> SailKeyBPClass(TEXT("/Game/Blueprint/Actors/BP_SailKey"));
 	if(!ensure(SailKeyBPClass.Class!=nullptr)) return;
-	SailKeyClass = SailKeyBPClass.Class; 
+	SailKeyClass = SailKeyBPClass.Class;
+
+	// Fetch all enemies
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightHouse::StaticClass(), LightHouses);
 }
 
 void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSailKeyParam, APlayerState* PlayerWithSailKeyParam)
@@ -39,6 +43,11 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSail
 			if(!ensure(OldBoatWithSailKey != nullptr)) return;
 			OldBoatWithSailKey->SetShowLightCylinder(false);
 		}
+		else
+		{
+			// todo: set enrage mode true to all lighthouses
+			SetEnragedModeToAllLighthouses();
+		}
 	}
 	// if the sail key was lost by being caught in a lighthouse light cone
 	else 
@@ -48,6 +57,10 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSail
 		if(!ensure(OldBoatWithSailKey != nullptr)) return;
 		OldBoatWithSailKey->SetShowLightCylinder(false);
 		OldBoatWithSailKey = nullptr;
+		EnragedMode = false;
+		
+		// todo: set enrage mode false to all lighthouses
+		SetEnragedModeToAllLighthouses();
 	}
 
 	UpdatePearlShield();
@@ -112,4 +125,14 @@ bool AGreedyGoblinsGameState::GetCanGetSailKey() const
 void AGreedyGoblinsGameState::SetCanGetSailKey()
 {
 	CanGetSailKey = true;
+}
+
+void AGreedyGoblinsGameState::SetEnragedModeToAllLighthouses()
+{
+	for(AActor* Actor : LightHouses)
+	{
+		ALightHouse* LightHouse = Cast<ALightHouse>(Actor);
+		if(!ensure(LightHouse)) return;
+		LightHouse->SetIsInEnragedMode(EnragedMode);
+	}
 }

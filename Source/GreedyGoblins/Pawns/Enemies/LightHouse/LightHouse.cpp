@@ -3,6 +3,7 @@
 
 #include "LightHouse.h"
 
+#include "DrawDebugHelpers.h"
 #include "Components/SphereComponent.h"
 #include "GreedyGoblins/Pawns/Boat/Boat.h"
 #include "Net/UnrealNetwork.h"
@@ -47,17 +48,15 @@ ALightHouse::ALightHouse()
 void ALightHouse::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	LightConeDynamicMaterial = UMaterialInstanceDynamic::Create(LightConeMeshComponent->GetMaterial(0), LightConeMeshComponent);
+	
 	if(HasAuthority())
 	{
 		NetUpdateFrequency = 100;
 		LightConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
 		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);	
 	}
-	LightConeDynamicMaterial = UMaterialInstanceDynamic::Create(LightConeMeshComponent->GetMaterial(0), LightConeMeshComponent);
-
-	GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
-	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 }
 
 // Called every frame
@@ -69,16 +68,14 @@ void ALightHouse::Tick(float DeltaTime)
 	const FRotator Rotation = Direction.Rotation();
 	SpotLightComponent->SetWorldRotation(Rotation);
 
+	//TODO THIS SUCKS, USE EVENT OR DELEGATES FOR CHECKING ISINRAGEMODE OR ISCHASING CHANGES
 	UpdateLightColor();
-
-	
 }
 
 // Called to bind functionality to input
 void ALightHouse::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 FVector ALightHouse::GetPositionAlongSpline() const
@@ -125,16 +122,16 @@ void ALightHouse::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 
 void ALightHouse::UpdateLightColor()
 {
-	if(IsChasing)
-	{	
+	if(bIsChasing)
+	{
 		FLinearColor Color = FLinearColor::Red;
 		LightConeDynamicMaterial->SetVectorParameterValue("LightColor", Color);
 		LightConeMeshComponent->SetMaterial(0, LightConeDynamicMaterial);
 	}
 	else
 	{
-		if(GreedyGoblinsGameState->GetEnragedMode())
-		{	
+		if(bIsInEnragedMode)
+		{
 			FLinearColor Color = FLinearColor::Yellow;
 			LightConeDynamicMaterial->SetVectorParameterValue("LightColor", Color);
 			LightConeMeshComponent->SetMaterial(0, LightConeDynamicMaterial);
@@ -151,7 +148,8 @@ void ALightHouse::UpdateLightColor()
 void ALightHouse::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ALightHouse, IsChasing);
+	DOREPLIFETIME(ALightHouse, bIsChasing);
+	DOREPLIFETIME(ALightHouse, bIsInEnragedMode);
 }
 
 

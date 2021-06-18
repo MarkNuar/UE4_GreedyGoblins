@@ -62,16 +62,20 @@ public:
 		return EyeSocket;
 	}
 
-	// todo
 	void SetIsChasing(bool val)
 	{
-		IsChasing = val;
+		bIsChasing = val;
 	};
 
 	bool GetIsChasing() const
 	{
-		return IsChasing;
+		return bIsChasing;
 	};
+
+	void SetIsInEnragedMode(bool val)
+	{
+		bIsInEnragedMode = val;
+	}
 	
 	
 protected:
@@ -119,10 +123,10 @@ private:
 	UMaterialInstanceDynamic* LightConeDynamicMaterial;
 
 	UPROPERTY(Replicated)
-	bool IsChasing;
+	bool bIsChasing = false;
+
+	UPROPERTY(Replicated)
+	bool bIsInEnragedMode = false;
 
 	void UpdateLightColor();
-
-	UPROPERTY()
-	AGreedyGoblinsGameState* GreedyGoblinsGameState;
 };

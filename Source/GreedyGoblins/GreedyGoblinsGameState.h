@@ -58,4 +58,9 @@ private:
 
 	void UpdatePearlShield() const;
 
+	void SetEnragedModeToAllLighthouses();
+
+	UPROPERTY()
+	TArray<AActor*> LightHouses;
+
 };

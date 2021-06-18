@@ -79,7 +79,6 @@ void ABoat::Tick(float DeltaTime)
 	if(ShowLightCylinder)
 	{
 		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(false);
-		DrawDebugString(GetWorld(), FVector(0, 0, -20), "I Have the sail key", this, FColor::White, DeltaTime);
 	}
 	else
 	{
