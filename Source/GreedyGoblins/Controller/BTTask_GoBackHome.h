@@ -37,7 +37,9 @@ private:
 	float LerpRatio = 0.f;
 	
 	UPROPERTY()
-	ALightHouse* LightHouse; 
+	ALightHouse* LightHouse;
+
+	float PrevLightSpeed;
 };
 
 

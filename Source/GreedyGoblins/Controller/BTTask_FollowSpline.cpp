@@ -32,7 +32,9 @@ EBTNodeResult::Type UBTTask_FollowSpline::ExecuteTask(UBehaviorTreeComponent& Ow
 	float Time = SplineComponent->GetSplineLength() / (LightHouse->GetLightSpeed() * 100.0f);
     
     InterpStep = 1 / Time;
- 
+
+	PrevLightSpeed = LightHouse->GetLightSpeed();
+	
 	return EBTNodeResult::InProgress;
 }
 
@@ -44,11 +46,20 @@ void UBTTask_FollowSpline::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 	
 	if(!ensure(SplineComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SplineComponent->GetName());
 	if(!ensure(PatrolTargetTransform)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetTransform->GetName());
-	
-	float InterpPosition = TimeInterp(DeltaSeconds);
-	PatrolTargetTransform->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(
-		InterpPosition*SplineComponent->GetSplineLength(), ESplineCoordinateSpace::World
-		));
+
+	if(LightHouse->GetLightSpeed() != PrevLightSpeed)
+	{
+		ExecuteTask(OwnerComp, NodeMemory); // let's pray
+	}
+	else
+	{
+		float InterpPosition = TimeInterp(DeltaSeconds);
+		PatrolTargetTransform->SetWorldLocation(SplineComponent->GetLocationAtDistanceAlongSpline(
+			InterpPosition*SplineComponent->GetSplineLength(), ESplineCoordinateSpace::World
+			));
+
+		PrevLightSpeed = LightHouse->GetLightSpeed();
+	}
 }
 
 float UBTTask_FollowSpline::TimeInterp(float DeltaTime){

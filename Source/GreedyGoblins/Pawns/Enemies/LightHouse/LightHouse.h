@@ -72,10 +72,8 @@ public:
 		return bIsChasing;
 	};
 
-	void SetIsInEnragedMode(bool val)
-	{
-		bIsInEnragedMode = val;
-	}
+	void SetIsInEnragedMode(bool val);
+	
 	
 	
 protected:
@@ -86,7 +84,12 @@ private:
 
 	// Light speed in m/s
 	UPROPERTY(EditAnywhere)
-	float LightSpeed = 20.0f;
+	float BaseLightSpeed = 20.0f;
+
+	UPROPERTY(EditAnywhere)
+	float EnragedLightSpeed = 40.0f;
+
+	float LightSpeed = BaseLightSpeed;
 
 	// Max Distance possible from Patrol Target in METERS
 	UPROPERTY(EditAnywhere)

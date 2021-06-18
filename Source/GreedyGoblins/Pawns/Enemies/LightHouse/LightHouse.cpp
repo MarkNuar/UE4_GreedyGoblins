@@ -152,5 +152,19 @@ void ALightHouse::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	DOREPLIFETIME(ALightHouse, bIsInEnragedMode);
 }
 
+void ALightHouse::SetIsInEnragedMode(bool val)
+{
+	bIsInEnragedMode = val;
+	if(val)
+	{
+		LightSpeed = EnragedLightSpeed;
+	}
+	else
+	{
+		LightSpeed = BaseLightSpeed;
+	}
+}
+
+
 
 

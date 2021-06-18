@@ -29,23 +29,35 @@ EBTNodeResult::Type UBTTask_GoBackHome::ExecuteTask(UBehaviorTreeComponent& Owne
 	
 	HomeSplinePosition = OwnerComp.GetBlackboardComponent()->GetValueAsVector(GetSelectedBlackboardKey());
 	StartPatrolTargetPosition = PatrolTargetTransform->GetComponentLocation();
+
+	PrevLightSpeed = LightHouse->GetLightSpeed();
+	
 	return EBTNodeResult::InProgress;
 	
 }
 
 void UBTTask_GoBackHome::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
-	LerpRatio += LerpStep * DeltaSeconds;
-	
-	FVector PatrolTargetPosition = FMath::LerpStable(StartPatrolTargetPosition, HomeSplinePosition, LerpRatio);
-
-	PatrolTargetTransform->SetWorldLocation(PatrolTargetPosition);
-	
-	if(LerpRatio >= 1)
+	if(LightHouse->GetLightSpeed() != PrevLightSpeed)
 	{
-		FName SplineHome = TEXT("HomeSplinePosition");
-		OwnerComp.GetBlackboardComponent()->ClearValue(SplineHome);
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		ExecuteTask(OwnerComp, NodeMemory); // let's pray
+	}
+	else
+	{
+		LerpRatio += LerpStep * DeltaSeconds;
+        
+        FVector PatrolTargetPosition = FMath::LerpStable(StartPatrolTargetPosition, HomeSplinePosition, LerpRatio);
+    
+        PatrolTargetTransform->SetWorldLocation(PatrolTargetPosition);
+        
+        if(LerpRatio >= 1)
+        {
+        	FName SplineHome = TEXT("HomeSplinePosition");
+        	OwnerComp.GetBlackboardComponent()->ClearValue(SplineHome);
+        	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+        }
+
+		PrevLightSpeed = LightHouse->GetLightSpeed();
 	}
 }
 

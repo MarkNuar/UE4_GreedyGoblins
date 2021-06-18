@@ -41,4 +41,6 @@ private:
 
 	UPROPERTY()
 	USplineComponent* SplineComponent;
+
+	float PrevLightSpeed;
 };
