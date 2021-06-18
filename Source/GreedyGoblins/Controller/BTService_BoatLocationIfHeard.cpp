@@ -29,36 +29,46 @@ void UBTService_BoatLocationIfHeard::TickNode(UBehaviorTreeComponent& OwnerComp,
 	
 	ABoat* BoatToChase = LightHouse->GetBoatToChase();
 	
-	if(BoatToChase != nullptr)
+	if(BoatToChase != nullptr
+		&& LightHouse->GetController()->LineOfSightTo(BoatToChase, LightHouse->GetEyeSocket()->GetComponentLocation()))
 	{
-		if(LightHouse->GetController()->LineOfSightTo(BoatToChase, LightHouse->GetEyeSocket()->GetComponentLocation()))
+		const FVector BoatLocation = BoatToChase->GetActorLocation();
+		const FVector BaseLocation = LightHouse->GetActorLocation();
+		const float MaxPatrolTargetDistance = LightHouse->GetMaxPatrolTargetDistance();
+		
+		if((BoatLocation - BaseLocation).Size() < MaxPatrolTargetDistance * 100)
 		{
-			const FVector BoatLocation = BoatToChase->GetActorLocation();
-			const FVector BaseLocation = LightHouse->GetActorLocation();
-			const float MaxPatrolTargetDistance = LightHouse->GetMaxPatrolTargetDistance();
+			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), BoatToChase);
+			const FName BoatLocationFName = TEXT("BoatLocation");
+			OwnerComp.GetBlackboardComponent()->SetValueAsVector(BoatLocationFName, BoatToChase->GetActorLocation());
 		
-			if((BoatLocation - BaseLocation).Size() < MaxPatrolTargetDistance * 100)
-			{
-				OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), BoatToChase);
-				const FName BoatLocationFName = TEXT("BoatLocation");
-				OwnerComp.GetBlackboardComponent()->SetValueAsVector(BoatLocationFName, BoatToChase->GetActorLocation());
-		
-				const FName SplineHome = TEXT("HomeSplinePosition");
+			const FName SplineHome = TEXT("HomeSplinePosition");
 			
-				if(!OwnerComp.GetBlackboardComponent()->IsVectorValueSet(SplineHome))
-				{
+			if(!OwnerComp.GetBlackboardComponent()->IsVectorValueSet(SplineHome))
+			{
 					OwnerComp.GetBlackboardComponent()->SetValueAsVector(SplineHome, LightHouse->GetPositionAlongSpline());
-				}
 			}
+		}
+		else
+		{
+			Clear(OwnerComp, GetSelectedBlackboardKey(), LightHouse);	
 		}
 	}
 	else
 	{
-		OwnerComp.GetBlackboardComponent()->ClearValue(GetSelectedBlackboardKey());
-		FName BoatLocation = TEXT("BoatLocation");
-		OwnerComp.GetBlackboardComponent()->ClearValue(BoatLocation);
-		// todo lighthouse -> stop chasing, colore diventa verde/arancione, dipende da enraged
+		Clear(OwnerComp, GetSelectedBlackboardKey(), LightHouse);	
+	}	
+}
+
+void UBTService_BoatLocationIfHeard::Clear(UBehaviorTreeComponent& OwnerComp, FName SelectedBlackboardKey, ALightHouse* LightHouse)
+{
+	OwnerComp.GetBlackboardComponent()->ClearValue(SelectedBlackboardKey);
+	FName BoatLocation = TEXT("BoatLocation");
+	OwnerComp.GetBlackboardComponent()->ClearValue(BoatLocation);
+	// todo lighthouse -> stop chasing, colore diventa verde/arancione, dipende da enraged
+	if(LightHouse->GetIsChasing() == true)
+	{
+		LightHouse->SetIsChasing(false);
 	}
-	
 }
 

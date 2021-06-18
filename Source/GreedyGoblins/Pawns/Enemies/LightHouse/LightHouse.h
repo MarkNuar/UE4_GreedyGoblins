@@ -62,10 +62,18 @@ public:
 		return EyeSocket;
 	}
 
-	//todo
-	// metodo start chasing -> diventa rosso 
-	// metodo end chasing -> torna al colore di default
+	// todo
+	void SetIsChasing(bool val)
+	{
+		IsChasing = val;
+	};
 
+	bool GetIsChasing() const
+	{
+		return IsChasing;
+	};
+	
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -107,4 +115,14 @@ private:
 	UFUNCTION()
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY()
+	UMaterialInstanceDynamic* LightConeDynamicMaterial;
+
+	UPROPERTY(Replicated)
+	bool IsChasing;
+
+	void UpdateLightColor();
+
+	UPROPERTY()
+	AGreedyGoblinsGameState* GreedyGoblinsGameState;
 };

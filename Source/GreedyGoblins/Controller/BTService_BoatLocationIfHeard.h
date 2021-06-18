@@ -6,6 +6,7 @@
 #include "BehaviorTree/Services/BTService_BlackboardBase.h"
 #include "BTService_BoatLocationIfHeard.generated.h"
 
+class ALightHouse;
 /**
  * 
  */
@@ -20,4 +21,7 @@ class GREEDYGOBLINS_API UBTService_BoatLocationIfHeard : public UBTService_Black
 	
 	protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+	private:
+	void Clear(UBehaviorTreeComponent& OwnerComp, FName SelectedBlackboardKey, ALightHouse* LightHouse);
 };

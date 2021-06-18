@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GreedyGoblins/Pawns/Boat/Boat.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 ALightHouse::ALightHouse()
@@ -40,7 +41,6 @@ ALightHouse::ALightHouse()
 	EyeSocket = CreateDefaultSubobject<USceneComponent>(TEXT("EyeSocket"));
 	if(!ensure(EyeSocket)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *EyeSocket->GetName());
 	EyeSocket->SetupAttachment(RootComponent);
-	
 }
 
 // Called when the game starts or when spawned
@@ -52,8 +52,12 @@ void ALightHouse::BeginPlay()
 	{
 		NetUpdateFrequency = 100;
 		LightConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
-		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);
+		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);	
 	}
+	LightConeDynamicMaterial = UMaterialInstanceDynamic::Create(LightConeMeshComponent->GetMaterial(0), LightConeMeshComponent);
+
+	GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 }
 
 // Called every frame
@@ -63,7 +67,11 @@ void ALightHouse::Tick(float DeltaTime)
 	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
 	const FVector Direction = PatrolTargetTransform->GetComponentLocation() - SpotLightComponent->GetComponentLocation();
 	const FRotator Rotation = Direction.Rotation();
-	SpotLightComponent->SetWorldRotation(Rotation);	
+	SpotLightComponent->SetWorldRotation(Rotation);
+
+	UpdateLightColor();
+
+	
 }
 
 // Called to bind functionality to input
@@ -113,7 +121,37 @@ void ALightHouse::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 			BoatToChase = nullptr;
 		}
 	}
+}
 
+void ALightHouse::UpdateLightColor()
+{
+	if(IsChasing)
+	{	
+		FLinearColor Color = FLinearColor::Red;
+		LightConeDynamicMaterial->SetVectorParameterValue("LightColor", Color);
+		LightConeMeshComponent->SetMaterial(0, LightConeDynamicMaterial);
+	}
+	else
+	{
+		if(GreedyGoblinsGameState->GetEnragedMode())
+		{	
+			FLinearColor Color = FLinearColor::Yellow;
+			LightConeDynamicMaterial->SetVectorParameterValue("LightColor", Color);
+			LightConeMeshComponent->SetMaterial(0, LightConeDynamicMaterial);
+		}
+		else
+		{
+			FLinearColor Color = FLinearColor::Green;
+			LightConeDynamicMaterial->SetVectorParameterValue("LightColor", Color);
+			LightConeMeshComponent->SetMaterial(0, LightConeDynamicMaterial);
+		}
+	}
+}
+
+void ALightHouse::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ALightHouse, IsChasing);
 }
 
 
