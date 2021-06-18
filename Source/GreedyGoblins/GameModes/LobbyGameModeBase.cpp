@@ -2,7 +2,10 @@
 
 
 #include "LobbyGameModeBase.h"
+
+#include "GameFramework/PlayerStart.h"
 #include "GreedyGoblins/GreedyGoblinsGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 void ALobbyGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
@@ -25,7 +28,6 @@ void ALobbyGameModeBase::Logout(AController* Exiting)
 	Super::Logout(Exiting);
 	--NumberOfPlayers;
 }
-
 
 void ALobbyGameModeBase::StartGame()
 {

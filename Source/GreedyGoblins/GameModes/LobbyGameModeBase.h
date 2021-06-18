@@ -17,7 +17,7 @@ public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 	
 	virtual void Logout(AController* Exiting) override;
-
+	
 private:
 
 	uint32 NumberOfPlayers = 0;
@@ -28,4 +28,5 @@ private:
 	void StartGame();
 
 	FTimerHandle GameStartTimer;
+	
 };

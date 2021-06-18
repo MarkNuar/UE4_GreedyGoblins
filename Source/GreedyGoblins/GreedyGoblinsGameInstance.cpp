@@ -90,7 +90,7 @@ void UGreedyGoblinsGameInstance::LoadMainMenu()
 {
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if(!ensure(PlayerController!=nullptr)) return;
-	PlayerController->ClientTravel("/Game/MenuSystem/MainMenu",ETravelType::TRAVEL_Absolute);
+	PlayerController->ClientTravel("/Game/MenuSystem/MainMenu",TRAVEL_Absolute);
 }
 
 void UGreedyGoblinsGameInstance::ExitGame()
@@ -198,7 +198,7 @@ void UGreedyGoblinsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoi
 	
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if(!ensure(PlayerController!=nullptr)) return;
-	PlayerController->ClientTravel(Address,ETravelType::TRAVEL_Absolute);
+	PlayerController->ClientTravel(Address,TRAVEL_Absolute);
 }
 
 void UGreedyGoblinsGameInstance::RefreshServerList()
