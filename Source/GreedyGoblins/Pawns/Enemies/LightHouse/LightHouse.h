@@ -57,6 +57,10 @@ public:
 		return MaxPatrolTargetDistance;
 	}
 
+	USceneComponent* GetEyeSocket() const
+	{
+		return EyeSocket;
+	}
 
 	//todo
 	// metodo start chasing -> diventa rosso 
@@ -90,9 +94,12 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USceneComponent* PatrolTargetTransform;
-private:
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	USplineComponent* SplineComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	USceneComponent* EyeSocket;
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

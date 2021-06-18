@@ -36,6 +36,10 @@ ALightHouse::ALightHouse()
 	MovementReplicator = CreateDefaultSubobject<ULighthouseMovementReplicator>(TEXT("LightHouseMovementReplicator"));
 	if(!ensure(MovementReplicator != nullptr)) return;
 	MovementReplicator->SetIsReplicated(true);
+
+	EyeSocket = CreateDefaultSubobject<USceneComponent>(TEXT("EyeSocket"));
+	if(!ensure(EyeSocket)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *EyeSocket->GetName());
+	EyeSocket->SetupAttachment(RootComponent);
 	
 }
 

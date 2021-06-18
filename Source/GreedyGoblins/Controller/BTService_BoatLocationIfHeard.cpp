@@ -31,21 +31,24 @@ void UBTService_BoatLocationIfHeard::TickNode(UBehaviorTreeComponent& OwnerComp,
 	
 	if(BoatToChase != nullptr)
 	{
-		FVector BoatLocation = BoatToChase->GetActorLocation();
-		FVector BaseLocation = LightHouse->GetActorLocation();
-		float MaxPatrolTargetDistance = LightHouse->GetMaxPatrolTargetDistance();
-		
-		if((BoatLocation - BaseLocation).Size() < MaxPatrolTargetDistance * 100)
+		if(LightHouse->GetController()->LineOfSightTo(BoatToChase, LightHouse->GetEyeSocket()->GetComponentLocation()))
 		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), BoatToChase);
-			FName BoatLocationFName = TEXT("BoatLocation");
-			OwnerComp.GetBlackboardComponent()->SetValueAsVector(BoatLocationFName, BoatToChase->GetActorLocation());
+			const FVector BoatLocation = BoatToChase->GetActorLocation();
+			const FVector BaseLocation = LightHouse->GetActorLocation();
+			const float MaxPatrolTargetDistance = LightHouse->GetMaxPatrolTargetDistance();
 		
-			FName SplineHome = TEXT("HomeSplinePosition");
-			
-			if(!OwnerComp.GetBlackboardComponent()->IsVectorValueSet(SplineHome))
+			if((BoatLocation - BaseLocation).Size() < MaxPatrolTargetDistance * 100)
 			{
-				OwnerComp.GetBlackboardComponent()->SetValueAsVector(SplineHome, LightHouse->GetPositionAlongSpline());
+				OwnerComp.GetBlackboardComponent()->SetValueAsObject(GetSelectedBlackboardKey(), BoatToChase);
+				const FName BoatLocationFName = TEXT("BoatLocation");
+				OwnerComp.GetBlackboardComponent()->SetValueAsVector(BoatLocationFName, BoatToChase->GetActorLocation());
+		
+				const FName SplineHome = TEXT("HomeSplinePosition");
+			
+				if(!OwnerComp.GetBlackboardComponent()->IsVectorValueSet(SplineHome))
+				{
+					OwnerComp.GetBlackboardComponent()->SetValueAsVector(SplineHome, LightHouse->GetPositionAlongSpline());
+				}
 			}
 		}
 	}
