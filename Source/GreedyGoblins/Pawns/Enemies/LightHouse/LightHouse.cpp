@@ -35,9 +35,10 @@ ALightHouse::ALightHouse()
 	if(!ensure(LightConeMeshComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *LightConeMeshComponent->GetName());
 	LightConeMeshComponent->SetupAttachment(SpotLightComponent);
 
-	MovementReplicator = CreateDefaultSubobject<ULighthouseMovementReplicator>(TEXT("LightHouseMovementReplicator"));
-	if(!ensure(MovementReplicator != nullptr)) return;
-	MovementReplicator->SetIsReplicated(true);
+	// TODO: re-enable movement replication 
+	// MovementReplicator = CreateDefaultSubobject<ULighthouseMovementReplicator>(TEXT("LightHouseMovementReplicator"));
+	// if(!ensure(MovementReplicator != nullptr)) return;
+	// MovementReplicator->SetIsReplicated(true);
 
 	EyeSocket = CreateDefaultSubobject<USceneComponent>(TEXT("EyeSocket"));
 	if(!ensure(EyeSocket)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *EyeSocket->GetName());

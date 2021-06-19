@@ -142,6 +142,7 @@ void UGreedyGoblinsGameInstance::CreateSession() const
 		SessionSettings.NumPublicConnections = 5;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
+		SessionSettings.bIsDedicated = false;
 		SessionSettings.Set<FString>(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings); // this call is async, since it traverse the network
 	}
