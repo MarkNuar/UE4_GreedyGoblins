@@ -41,6 +41,8 @@ public:
 	UFUNCTION(Exec)
 	virtual void LoadMainMenu() override;
 
+	void LoadEndGameMenu();
+
 	virtual void ExitGame() override;
 
 	virtual void RefreshServerList() override;
@@ -53,9 +55,14 @@ private:
 	class UMainMenu* Menu;
 
 	TSubclassOf<class UUserWidget> InGameMenuClass;
+
+	TSubclassOf<class UUserWidget> EndGameMenuClass;
 	
 	UPROPERTY()
 	class UInGameMenu* InGameMenu;
+
+	UPROPERTY()
+	class UEndGameMenu* EndGameMenu;
 
 	IOnlineSessionPtr SessionInterface;
 

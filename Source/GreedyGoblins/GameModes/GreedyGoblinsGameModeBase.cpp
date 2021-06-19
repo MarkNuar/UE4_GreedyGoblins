@@ -13,7 +13,6 @@ AGreedyGoblinsGameModeBase::AGreedyGoblinsGameModeBase()
 
 AActor* AGreedyGoblinsGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 {	
-	UE_LOG(LogTemp, Warning, TEXT("OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"));
 	int Index = FMath::RandRange(0, FreePlayerStarts.Num()-1);
 	AActor* PlayerStart = FreePlayerStarts[Index];
 	FreePlayerStarts.RemoveAt(Index);

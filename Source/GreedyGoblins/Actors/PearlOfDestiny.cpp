@@ -3,6 +3,8 @@
 
 #include "PearlOfDestiny.h"
 
+#include "GreedyGoblins/GreedyGoblinsGameInstance.h"
+
 // Sets default values
 APearlOfDestiny::APearlOfDestiny()
 {
@@ -39,6 +41,9 @@ void APearlOfDestiny::Tick(float DeltaTime)
 
 void APearlOfDestiny::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
-	//TODO CALL END GAME
+	//TODO CALL END GAME use event
+	UGreedyGoblinsGameInstance* GameInstance = Cast<UGreedyGoblinsGameInstance>(GetGameInstance());
+	if(!ensure(GameInstance)) return;
+	GameInstance->LoadEndGameMenu();
 }
 

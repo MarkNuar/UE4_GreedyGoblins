@@ -8,6 +8,7 @@
 #include "MenuSystem/MenuWidget.h"
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "GreedyGoblinMenus/EndGameMenu.h"
 #include "Interfaces/OnlineSessionInterface.h"
 
 const static FName SESSION_NAME = TEXT("Game");
@@ -22,6 +23,10 @@ UGreedyGoblinsGameInstance::UGreedyGoblinsGameInstance(const FObjectInitializer&
 	const ConstructorHelpers::FClassFinder<UUserWidget> InGameMenuBPClass(TEXT("/Game/MenuSystem/WBP_InGameMenu")); // gets hold of the blueprint widget
 	if(!ensure(InGameMenuBPClass.Class!=nullptr)) return;
 	InGameMenuClass = InGameMenuBPClass.Class; // store it in a local variable, private
+
+	const ConstructorHelpers::FClassFinder<UUserWidget> EndGameBPClass(TEXT("/Game/GreedyGolinsMenus/WBP_EndGameMenu")); // gets hold of the blueprint widget
+	if(!ensure(EndGameBPClass.Class!=nullptr)) return;
+	EndGameMenuClass = EndGameBPClass.Class; // store it in a local variable, private
 }
 
 void UGreedyGoblinsGameInstance::Init()
@@ -91,6 +96,19 @@ void UGreedyGoblinsGameInstance::LoadMainMenu()
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if(!ensure(PlayerController!=nullptr)) return;
 	PlayerController->ClientTravel("/Game/MenuSystem/MainMenu",TRAVEL_Absolute);
+}
+
+void UGreedyGoblinsGameInstance::LoadEndGameMenu()
+{
+	if(!ensure(EndGameMenuClass!=nullptr)) return;
+	
+	EndGameMenu = CreateWidget<UEndGameMenu>(this,EndGameMenuClass); // instantiate the menu widget
+	if(!ensure(EndGameMenu!=nullptr)) return;
+	UE_LOG(LogTemp, Warning, TEXT("end game load menu"));
+	// SETUP THE MENU (NO CURSOR, SHOW, ETC..)
+	EndGameMenu->Setup();
+	// SET THE MENU INTERFACE IN THE MAIN MENU
+	EndGameMenu->SetMenuInterface(this);
 }
 
 void UGreedyGoblinsGameInstance::ExitGame()

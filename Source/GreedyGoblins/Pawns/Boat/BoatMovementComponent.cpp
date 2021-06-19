@@ -41,8 +41,6 @@ void UBoatMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	{
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
-
-		UE_LOG(LogTemp, Error, TEXT("In the if"));
 	}
 
 	const FString LastMoveBool = LastMove.bIsInFastMode ? TEXT("true") : TEXT("false");
