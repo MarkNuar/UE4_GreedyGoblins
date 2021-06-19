@@ -22,7 +22,7 @@ protected:
 	
 private:
 
-	//UPROPERTY(meta = (BindWidget))
+	UPROPERTY(meta = (BindWidget))
 	UButton* QuitButton;
 
 	UFUNCTION()

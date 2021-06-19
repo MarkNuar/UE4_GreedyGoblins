@@ -40,10 +40,14 @@ void APearlOfDestiny::Tick(float DeltaTime)
 
 
 void APearlOfDestiny::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{	
-	//TODO CALL END GAME use event
-	UGreedyGoblinsGameInstance* GameInstance = Cast<UGreedyGoblinsGameInstance>(GetGameInstance());
-	if(!ensure(GameInstance)) return;
-	GameInstance->LoadEndGameMenu();
+{
+	UE_LOG(LogTemp, Error, TEXT("Volevi"));
+	if(OtherComp->GetClass()->IsChildOf(UBoxComponent::StaticClass()) && OverlappedComp->GetClass()->IsChildOf(UBoxComponent::StaticClass()))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Mi hai preso"));
+		UGreedyGoblinsGameInstance* GameInstance = Cast<UGreedyGoblinsGameInstance>(GetGameInstance());
+		if(!ensure(GameInstance)) return;
+		GameInstance->LoadEndGameMenu();
+	}
 }
 
