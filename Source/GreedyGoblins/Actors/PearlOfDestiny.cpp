@@ -41,6 +41,7 @@ void APearlOfDestiny::Tick(float DeltaTime)
 
 void APearlOfDestiny::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+    // TODO MAKE IT FIRE ON ALL CLIENTS TOO
 	UE_LOG(LogTemp, Error, TEXT("Volevi"));
 	if(OtherComp->GetClass()->IsChildOf(UBoxComponent::StaticClass()) && OverlappedComp->GetClass()->IsChildOf(UBoxComponent::StaticClass()))
 	{

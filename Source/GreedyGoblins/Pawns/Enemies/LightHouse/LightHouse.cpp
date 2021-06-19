@@ -58,6 +58,8 @@ void ALightHouse::BeginPlay()
 		LightConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
 		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);	
 	}
+
+	UpdateLightColor();
 }
 
 // Called every frame
@@ -69,8 +71,8 @@ void ALightHouse::Tick(float DeltaTime)
 	const FRotator Rotation = Direction.Rotation();
 	SpotLightComponent->SetWorldRotation(Rotation);
 
-	//TODO THIS SUCKS, USE EVENT OR DELEGATES FOR CHECKING ISINRAGEMODE OR ISCHASING CHANGES
-	UpdateLightColor();
+	// //TODO THIS SUCKS, USE EVENT OR DELEGATES FOR CHECKING ISINRAGEMODE OR ISCHASING CHANGES
+	// UpdateLightColor();
 }
 
 // Called to bind functionality to input
@@ -121,6 +123,31 @@ void ALightHouse::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 	}
 }
 
+void ALightHouse::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ALightHouse, bIsChasing);
+}
+
+void ALightHouse::On_bIsChasing_Change()
+{
+	UpdateLightColor();
+}
+
+void ALightHouse::SetIsInEnragedMode(bool bLocalIsInEnragedMode)
+{
+	bIsInEnragedMode = bLocalIsInEnragedMode;
+	if(bIsInEnragedMode)
+	{
+		LightSpeed = EnragedLightSpeed;
+	}
+	else
+	{
+		LightSpeed = BaseLightSpeed;
+	}
+	UpdateLightColor();
+}
+
 void ALightHouse::UpdateLightColor()
 {
 	if(bIsChasing)
@@ -143,26 +170,6 @@ void ALightHouse::UpdateLightColor()
 			LightConeDynamicMaterial->SetVectorParameterValue("LightColor", Color);
 			LightConeMeshComponent->SetMaterial(0, LightConeDynamicMaterial);
 		}
-	}
-}
-
-void ALightHouse::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ALightHouse, bIsChasing);
-	DOREPLIFETIME(ALightHouse, bIsInEnragedMode);
-}
-
-void ALightHouse::SetIsInEnragedMode(bool val)
-{
-	bIsInEnragedMode = val;
-	if(val)
-	{
-		LightSpeed = EnragedLightSpeed;
-	}
-	else
-	{
-		LightSpeed = BaseLightSpeed;
 	}
 }
 

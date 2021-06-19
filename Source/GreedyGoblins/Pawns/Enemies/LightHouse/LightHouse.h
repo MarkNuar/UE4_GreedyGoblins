@@ -66,6 +66,7 @@ public:
 	void SetIsChasing(bool val)
 	{
 		bIsChasing = val;
+		UpdateLightColor();
 	};
 
 	bool GetIsChasing() const
@@ -126,10 +127,12 @@ private:
 	UPROPERTY()
 	UMaterialInstanceDynamic* LightConeDynamicMaterial;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = On_bIsChasing_Change)
 	bool bIsChasing = false;
 
-	UPROPERTY(Replicated)
+	UFUNCTION()
+	void On_bIsChasing_Change();
+
 	bool bIsInEnragedMode = false;
 
 	void UpdateLightColor();

@@ -16,7 +16,7 @@ AGreedyGoblinsGameState::AGreedyGoblinsGameState()
 	if(!ensure(SailKeyBPClass.Class!=nullptr)) return;
 	SailKeyClass = SailKeyBPClass.Class;
 
-	// Fetch all enemies
+	// Fetch all Lighthouses
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightHouse::StaticClass(), LightHouses);
 }
 
@@ -33,7 +33,7 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSail
 		ABoat* BoatWithSailKey = Cast<ABoat>(PlayerWithSailKey->GetPawn());
 		if(!ensure(BoatWithSailKey != nullptr)) return;
 		BoatWithSailKey->SetShowLightCylinder(true);
-		EnragedMode = true;
+		bIsInEnragedMode = true;
 
 		// if that somebody, stole it from someone else
 		if(OldPlayerWithSailKey != nullptr)
@@ -57,7 +57,7 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSail
 		if(!ensure(OldBoatWithSailKey != nullptr)) return;
 		OldBoatWithSailKey->SetShowLightCylinder(false);
 		OldBoatWithSailKey = nullptr;
-		EnragedMode = false;
+		bIsInEnragedMode = false;
 		
 		// todo: set enrage mode false to all lighthouses
 		SetEnragedModeToAllLighthouses();
@@ -77,11 +77,13 @@ bool AGreedyGoblinsGameState::HasSailKey(APlayerState* PlayerState) const
 	return PlayerWithSailKey == PlayerState;
 }
 
+
+
 void AGreedyGoblinsGameState::StartSailKeyHitDelay()
 {
 	if(!GetWorldTimerManager().IsTimerActive(SailKeyTimerHandle))
 	{
-		CanGetSailKey = false;
+		bCanGetSailKey = false;
 		GetWorldTimerManager().SetTimer(SailKeyTimerHandle, this, &AGreedyGoblinsGameState::SetCanGetSailKey,SailKeyHitDelay);
 	}
 }
@@ -114,17 +116,22 @@ void AGreedyGoblinsGameState::UpdatePearlShield() const
 
 void AGreedyGoblinsGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AGreedyGoblinsGameState, EnragedMode);
+	DOREPLIFETIME(AGreedyGoblinsGameState, bIsInEnragedMode);
+}
+
+void AGreedyGoblinsGameState::On_bIsInEnragedMode_Rep()
+{
+	SetEnragedModeToAllLighthouses();
 }
 
 bool AGreedyGoblinsGameState::GetCanGetSailKey() const
 {
-	return CanGetSailKey;
+	return bCanGetSailKey;
 }
 
 void AGreedyGoblinsGameState::SetCanGetSailKey()
 {
-	CanGetSailKey = true;
+	bCanGetSailKey = true;
 }
 
 void AGreedyGoblinsGameState::SetEnragedModeToAllLighthouses()
@@ -133,6 +140,6 @@ void AGreedyGoblinsGameState::SetEnragedModeToAllLighthouses()
 	{
 		ALightHouse* LightHouse = Cast<ALightHouse>(Actor);
 		if(!ensure(LightHouse)) return;
-		LightHouse->SetIsInEnragedMode(EnragedMode);
+		LightHouse->SetIsInEnragedMode(bIsInEnragedMode);
 	}
 }

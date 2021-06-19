@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 
+#include "DrawDebugHelpers.h"
 #include "GameFramework/GameState.h"
 #include "GreedyGoblinsGameState.generated.h"
 
@@ -26,7 +27,7 @@ public:
 	
 	bool GetEnragedMode() const
 	{
-		return EnragedMode;
+		return bIsInEnragedMode;
 	}
 
 	void UpdateSailKeyOwner(APlayerState* OldPlayerWithSailKeyParam, APlayerState* PlayerWithSailKeyParam);
@@ -49,10 +50,13 @@ private:
 	UPROPERTY(EditAnywhere)
 	float SailKeyHitDelay = 2.0f;
 	
-	UPROPERTY(Replicated)
-	bool EnragedMode = false;
+	UPROPERTY(ReplicatedUsing = On_bIsInEnragedMode_Rep)
+	bool bIsInEnragedMode = false;
 
-	bool CanGetSailKey = true;
+	UFUNCTION()
+	void On_bIsInEnragedMode_Rep();
+
+	bool bCanGetSailKey = true;
 
 	void StartSailKeyHitDelay();
 
