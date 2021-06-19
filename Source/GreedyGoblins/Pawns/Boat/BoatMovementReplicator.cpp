@@ -39,7 +39,7 @@ void UBoatMovementReplicator::TickComponent(float DeltaTime, ELevelTick TickType
 	}
 
 	// we are the server and in control of the pawn
-	if(GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+	if(GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy || (GetOwner()->GetLocalRole() == ROLE_Authority && GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy))
 	{
 		UpdateServerState(LastMove); // updates the server on the last move of the client
 	}
