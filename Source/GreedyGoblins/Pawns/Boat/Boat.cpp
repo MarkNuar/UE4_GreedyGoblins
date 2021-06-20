@@ -49,6 +49,7 @@ void ABoat::BeginPlay()
 	{
 		NetUpdateFrequency = 100;
 		BoxCollider->OnComponentHit.AddDynamic(this, &ABoat::OnBoatHit);
+		SetAutonomousProxy(false);
 	}
 }
 
