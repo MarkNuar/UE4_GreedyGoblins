@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
 #include "GreedyGoblinsGameModeBase.generated.h"
 
+class ASailKey;
 /**
  * 
  */
@@ -19,7 +21,9 @@ protected:
 
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
+	
 private:
 	UPROPERTY()
 	TArray<AActor*> FreePlayerStarts;
+	
 };

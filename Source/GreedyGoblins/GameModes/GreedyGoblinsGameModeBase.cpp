@@ -4,6 +4,7 @@
 #include "GreedyGoblinsGameModeBase.h"
 
 #include "GameFramework/PlayerStart.h"
+#include "GreedyGoblins/Actors/SailKey.h"
 #include "Kismet/GameplayStatics.h"
 
 AGreedyGoblinsGameModeBase::AGreedyGoblinsGameModeBase()

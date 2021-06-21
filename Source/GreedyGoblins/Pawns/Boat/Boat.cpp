@@ -75,8 +75,8 @@ void ABoat::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	DrawDebugString(GetWorld(), FVector(0, 0, 800), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
-	DrawDebugString(GetWorld(), FVector(0, 0, 900), GetEnumText(GetRemoteRole()), this, FColor::White, DeltaTime);
+	// DrawDebugString(GetWorld(), FVector(0, 0, 800), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
+	// DrawDebugString(GetWorld(), FVector(0, 0, 900), GetEnumText(GetRemoteRole()), this, FColor::White, DeltaTime);
 	
 	if(ShowLightCylinder)
 	{
@@ -87,10 +87,11 @@ void ABoat::Tick(float DeltaTime)
 		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(true);
 	}
 	
+	/*
 	if(GetPlayerState() != nullptr)
 	{
 		DrawDebugString(GetWorld(), FVector(0, 0, -50), "Player number " + FString::FromInt(GetPlayerState()->GetPlayerId()),this, FColor::White, DeltaTime);
-	}
+	}*/
 }
 
 // Called to bind functionality to input

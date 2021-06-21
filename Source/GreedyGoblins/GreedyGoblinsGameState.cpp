@@ -3,6 +3,7 @@
 
 #include "GreedyGoblinsGameState.h"
 
+#include "GreedyGoblinsGameInstance.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -77,8 +78,6 @@ bool AGreedyGoblinsGameState::HasSailKey(APlayerState* PlayerState) const
 	return PlayerWithSailKey == PlayerState;
 }
 
-
-
 void AGreedyGoblinsGameState::StartSailKeyHitDelay()
 {
 	if(!GetWorldTimerManager().IsTimerActive(SailKeyTimerHandle))
@@ -117,6 +116,12 @@ void AGreedyGoblinsGameState::UpdatePearlShield() const
 void AGreedyGoblinsGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(AGreedyGoblinsGameState, bIsInEnragedMode);
+	DOREPLIFETIME(AGreedyGoblinsGameState, bIsGameEnded);
+}
+
+void AGreedyGoblinsGameState::On_bIsGameEnded_Rep()
+{
+	ShowEndScreen();
 }
 
 void AGreedyGoblinsGameState::On_bIsInEnragedMode_Rep()
@@ -143,3 +148,11 @@ void AGreedyGoblinsGameState::SetEnragedModeToAllLighthouses()
 		LightHouse->SetIsInEnragedMode(bIsInEnragedMode);
 	}
 }
+
+void AGreedyGoblinsGameState::ShowEndScreen()
+{
+	UGreedyGoblinsGameInstance* GameInstance = Cast<UGreedyGoblinsGameInstance>(GetGameInstance());
+	if(!ensure(GameInstance)) return;
+	GameInstance->LoadEndGameMenu();
+}
+

@@ -30,11 +30,18 @@ public:
 		return bIsInEnragedMode;
 	}
 
+	void SetIsGameEnded(bool bIsGameEndedParam)
+	{
+		this->bIsGameEnded = bIsGameEndedParam;
+	}
+	
 	void UpdateSailKeyOwner(APlayerState* OldPlayerWithSailKeyParam, APlayerState* PlayerWithSailKeyParam);
 
 	void DropSailKeyAtLocation(FVector Location);
 	
 	bool HasSailKey(APlayerState* PlayerState) const;
+	
+	void ShowEndScreen();
 	
 private:
 	FTimerHandle SailKeyTimerHandle;
@@ -56,13 +63,20 @@ private:
 	UFUNCTION()
 	void On_bIsInEnragedMode_Rep();
 
+	UFUNCTION()
+	void On_bIsGameEnded_Rep();
+	
 	bool bCanGetSailKey = true;
 
+	UPROPERTY(ReplicatedUsing = On_bIsGameEnded_Rep)
+	bool bIsGameEnded = false;
+	
 	void StartSailKeyHitDelay();
 
 	void UpdatePearlShield() const;
 
 	void SetEnragedModeToAllLighthouses();
+
 
 	UPROPERTY()
 	TArray<AActor*> LightHouses;

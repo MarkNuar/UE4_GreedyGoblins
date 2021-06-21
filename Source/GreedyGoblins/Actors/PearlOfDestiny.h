@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 
+#include "SailKey.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
 #include "PearlOfDestiny.generated.h"
@@ -42,7 +43,15 @@ public:
 		return ShieldMesh;
 	}
 
+	UPROPERTY()
+	AGreedyGoblinsGameState* GreedyGoblinsGameState;
+	
 private:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> SailKeySpawnPoints;
+
+	TSubclassOf<class ASailKey> SailKeyClass;
 };

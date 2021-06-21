@@ -12,11 +12,11 @@ void ALobbyGameModeBase::PostLogin(APlayerController* NewPlayer)
 	Super::PostLogin(NewPlayer);
 	++NumberOfPlayers;
 
-	if(NumberOfPlayers == 8)
+	if(NumberOfPlayers == MaxNumberOfPlayers)
 	{
 		this->StartGame();
 	}
-	else if(NumberOfPlayers >= 4)
+	else if(NumberOfPlayers >= MinNumberOfPlayers)
 	{
 		GetWorldTimerManager().SetTimer(GameStartTimer, this, &ALobbyGameModeBase::StartGame, 10); // after 5 seconds calls StartGame function
 		//TODO DISPLAY TIMER BEFORE START 

@@ -25,6 +25,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	uint32 MinNumberOfPlayers = 3;
 
+	UPROPERTY(EditAnywhere)
+	uint32 MaxNumberOfPlayers = 8;
+	
 	void StartGame();
 
 	FTimerHandle GameStartTimer;
