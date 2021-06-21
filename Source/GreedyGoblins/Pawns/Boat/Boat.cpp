@@ -5,13 +5,9 @@
 
 #include <assert.h>
 
-#include "DrawDebugHelpers.h"
 #include "EngineUtils.h"
-#include "ToolBuilderUtil.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/PlayerStart.h"
-#include "GameFramework/PlayerState.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
