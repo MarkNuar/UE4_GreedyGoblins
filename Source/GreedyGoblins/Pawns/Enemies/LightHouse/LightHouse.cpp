@@ -36,9 +36,9 @@ ALightHouse::ALightHouse()
 	LightConeMeshComponent->SetupAttachment(SpotLightComponent);
 
 	// TODO: re-enable movement replication 
-	// MovementReplicator = CreateDefaultSubobject<ULighthouseMovementReplicator>(TEXT("LightHouseMovementReplicator"));
-	// if(!ensure(MovementReplicator != nullptr)) return;
-	// MovementReplicator->SetIsReplicated(true);
+	MovementReplicator = CreateDefaultSubobject<ULighthouseMovementReplicator>(TEXT("LightHouseMovementReplicator"));
+	if(!ensure(MovementReplicator != nullptr)) return;
+	MovementReplicator->SetIsReplicated(true);
 
 	EyeSocket = CreateDefaultSubobject<USceneComponent>(TEXT("EyeSocket"));
 	if(!ensure(EyeSocket)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *EyeSocket->GetName());
@@ -70,9 +70,6 @@ void ALightHouse::Tick(float DeltaTime)
 	const FVector Direction = PatrolTargetTransform->GetComponentLocation() - SpotLightComponent->GetComponentLocation();
 	const FRotator Rotation = Direction.Rotation();
 	SpotLightComponent->SetWorldRotation(Rotation);
-
-	// //TODO THIS SUCKS, USE EVENT OR DELEGATES FOR CHECKING ISINRAGEMODE OR ISCHASING CHANGES
-	// UpdateLightColor();
 }
 
 // Called to bind functionality to input

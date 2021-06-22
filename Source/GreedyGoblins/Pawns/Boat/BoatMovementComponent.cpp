@@ -125,7 +125,7 @@ void UBoatMovementComponent::OnWallHit(FVector HitNormal, float DeltaTime)
 	}
 	else
 	{
-		const float BoatRotationAngle = (0.8 + PI/2 - CollisionAngle) * DeltaTime;
+		const float BoatRotationAngle = (0.3 + PI/2 - CollisionAngle) * DeltaTime;
 		const FQuat RotationDelta(FVector::CrossProduct(OppositeNormalU, VelocityU), OnWallSlideRotationSpeed * BoatRotationAngle);
 		Velocity = RotationDelta.RotateVector(Velocity);
 		GetOwner()->AddActorWorldRotation(RotationDelta);

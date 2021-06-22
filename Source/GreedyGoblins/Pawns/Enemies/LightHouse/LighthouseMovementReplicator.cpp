@@ -38,6 +38,8 @@ void ULighthouseMovementReplicator::TickComponent(float DeltaTime, ELevelTick Ti
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if(PatrolTargetComponent == nullptr) return;
+	
 	// we are the server and in control of the pawn
 	if(GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
@@ -48,19 +50,6 @@ void ULighthouseMovementReplicator::TickComponent(float DeltaTime, ELevelTick Ti
 	if(GetOwnerRole() == ROLE_SimulatedProxy)
 	{
 		ClientTick(DeltaTime);
-	}
-}
-
-void ULighthouseMovementReplicator::OnRep_ServerState() // after server replicated serverstate to everybody (if i'm a client seen from another client's POV)
-{
-	// if(!ensure(PatrolTargetComponent != nullptr))
-	// 	return;
-	if(PatrolTargetComponent)
-	{
-		ClientTimeBetweenLastUpdates = ClientTimeSinceUpdate;
-        ClientTimeSinceUpdate = 0;
-
-        ClientStartTransform = PatrolTargetComponent->GetComponentTransform(); //client sets its move after server validated it, taking it from the serverstate struct */
 	}
 }
 
@@ -91,3 +80,13 @@ void ULighthouseMovementReplicator::InterpolateLocation(const FLinearSpline& Spl
 	PatrolTargetComponent->SetWorldLocation(NewLocation);	
 }
 
+void ULighthouseMovementReplicator::OnRep_ServerState() // after server replicated serverstate to everybody (if i'm a client seen from another client's POV)
+{
+	if(PatrolTargetComponent)
+	{
+		ClientTimeBetweenLastUpdates = ClientTimeSinceUpdate;
+		ClientTimeSinceUpdate = 0;
+
+		ClientStartTransform = PatrolTargetComponent->GetComponentTransform(); //client sets its move after server validated it, taking it from the serverstate struct */
+	}
+}

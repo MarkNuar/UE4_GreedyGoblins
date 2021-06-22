@@ -29,9 +29,9 @@ public:
 
 	FVector GetPositionAlongSpline() const;
 
-	// TODO: re-enable movement replication 
-	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	// ULighthouseMovementReplicator* MovementReplicator;
+	//TODO: re-enable movement replication 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	ULighthouseMovementReplicator* MovementReplicator;
 	
 	USceneComponent* GetPatrolTargetTransform() const
 	{
