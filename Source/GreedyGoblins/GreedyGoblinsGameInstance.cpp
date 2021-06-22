@@ -157,12 +157,16 @@ void UGreedyGoblinsGameInstance::CreateSession() const
 		{
 			SessionSettings.bIsLANMatch = false;
 		}
-		SessionSettings.NumPublicConnections = 5;
+		SessionSettings.NumPublicConnections = 8;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 		SessionSettings.bIsDedicated = false;
 		SessionSettings.Set<FString>(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
-		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings); // this call is async, since it traverse the network
+
+		//TODO TESTING
+		ULocalPlayer* const Player = GetFirstGamePlayer();
+		SessionInterface->CreateSession(*(Player->GetPreferredUniqueNetId()), SESSION_NAME, SessionSettings); // this call is async, since it traverse the network
+		//SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings); // this call is async, since it traverse the network
 	}
 }
 
@@ -196,7 +200,10 @@ void UGreedyGoblinsGameInstance::Join(uint32 Index)
 		Menu->Teardown();
 	}
 
-	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]); // join the session at the given index in the session search search results
+	//TODO TESTING
+	ULocalPlayer* const Player = GetFirstGamePlayer();
+	SessionInterface->JoinSession(*(Player->GetPreferredUniqueNetId()), SESSION_NAME, SessionSearch->SearchResults[Index]); // join the session at the given index in the session search search results
+	//SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]); // join the session at the given index in the session search search results
 }
 
 void UGreedyGoblinsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
@@ -228,7 +235,9 @@ void UGreedyGoblinsGameInstance::RefreshServerList()
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals); // settings for search presence
 		SessionSearch->MaxSearchResults = 100; // get enough results back
 		UE_LOG(LogTemp, Warning, TEXT("Started finding session"));
-		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+		ULocalPlayer* const Player = GetFirstGamePlayer();
+		SessionInterface->FindSessions(*(Player->GetPreferredUniqueNetId()), SessionSearch.ToSharedRef());
+		// SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
 }
 
