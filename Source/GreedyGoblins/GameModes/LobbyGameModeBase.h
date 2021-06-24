@@ -27,7 +27,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	uint32 MaxNumberOfPlayers = 8;
-	
+
+	UFUNCTION(BlueprintCallable)
 	void StartGame();
 
 	FTimerHandle GameStartTimer;

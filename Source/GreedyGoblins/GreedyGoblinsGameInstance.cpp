@@ -161,12 +161,10 @@ void UGreedyGoblinsGameInstance::CreateSession() const
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
 		SessionSettings.bIsDedicated = false;
+		SessionSettings.bAllowJoinInProgress = true;
 		SessionSettings.Set<FString>(SERVER_NAME_SETTINGS_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
-		//TODO TESTING
-		ULocalPlayer* const Player = GetFirstGamePlayer();
-		SessionInterface->CreateSession(*(Player->GetPreferredUniqueNetId()), SESSION_NAME, SessionSettings); // this call is async, since it traverse the network
-		//SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings); // this call is async, since it traverse the network
+		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings); // this call is async, since it traverse the network
 	}
 }
 
@@ -200,10 +198,7 @@ void UGreedyGoblinsGameInstance::Join(uint32 Index)
 		Menu->Teardown();
 	}
 
-	//TODO TESTING
-	ULocalPlayer* const Player = GetFirstGamePlayer();
-	SessionInterface->JoinSession(*(Player->GetPreferredUniqueNetId()), SESSION_NAME, SessionSearch->SearchResults[Index]); // join the session at the given index in the session search search results
-	//SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]); // join the session at the given index in the session search search results
+	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]); // join the session at the given index in the session search search results
 }
 
 void UGreedyGoblinsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
@@ -235,9 +230,9 @@ void UGreedyGoblinsGameInstance::RefreshServerList()
 		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true, EOnlineComparisonOp::Equals); // settings for search presence
 		SessionSearch->MaxSearchResults = 100; // get enough results back
 		UE_LOG(LogTemp, Warning, TEXT("Started finding session"));
-		ULocalPlayer* const Player = GetFirstGamePlayer();
-		SessionInterface->FindSessions(*(Player->GetPreferredUniqueNetId()), SessionSearch.ToSharedRef());
-		// SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
+		
+	
+		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
 	}
 }
 
@@ -275,6 +270,7 @@ void UGreedyGoblinsGameInstance::StartSession() const
 {
 	if(SessionInterface.IsValid())
 	{
+	
 		SessionInterface->StartSession(SESSION_NAME); // Marks an online session as in progress (as opposed to being in lobby or pending)
 	}
 }

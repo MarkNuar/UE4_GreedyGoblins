@@ -11,16 +11,19 @@ void ALobbyGameModeBase::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 	++NumberOfPlayers;
-
+	
 	if(NumberOfPlayers == MaxNumberOfPlayers)
 	{
 		this->StartGame();
 	}
+	
+	/*
 	else if(NumberOfPlayers >= MinNumberOfPlayers)
 	{
 		GetWorldTimerManager().SetTimer(GameStartTimer, this, &ALobbyGameModeBase::StartGame, 10); // after 5 seconds calls StartGame function
 		//TODO DISPLAY TIMER BEFORE START 
-	}
+	}*/
+	
 }
 
 void ALobbyGameModeBase::Logout(AController* Exiting)
