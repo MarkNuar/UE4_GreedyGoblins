@@ -20,10 +20,9 @@ protected:
 	AGreedyGoblinsGameModeBase();
 
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
-
 	
 private:
 	UPROPERTY()
 	TArray<AActor*> FreePlayerStarts;
-	
 };
+

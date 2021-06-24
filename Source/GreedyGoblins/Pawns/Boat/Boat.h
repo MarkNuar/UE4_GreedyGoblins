@@ -53,6 +53,7 @@ class GREEDYGOBLINS_API ABoat : public APawn
 	void LookUpRate(float Value);
 	void LookRightRate(float Value);
 	void ToggleFastMode();
+	AActor* GetRandomPlayerStart();
 	
 	UPROPERTY(Replicated)
 	bool ShowLightCylinder = false;

@@ -12,6 +12,7 @@ AGreedyGoblinsGameModeBase::AGreedyGoblinsGameModeBase()
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), FreePlayerStarts);
 }
 
+
 AActor* AGreedyGoblinsGameModeBase::ChoosePlayerStart_Implementation(AController* Player)
 {	
 	int Index = FMath::RandRange(0, FreePlayerStarts.Num()-1);

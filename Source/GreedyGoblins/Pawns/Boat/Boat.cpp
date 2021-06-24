@@ -8,6 +8,7 @@
 #include "EngineUtils.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/PlayerStart.h"
 #include "GreedyGoblins/GreedyGoblinsGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
@@ -69,10 +70,7 @@ FString GetEnumText (ENetRole Role)
 void ABoat::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	// DrawDebugString(GetWorld(), FVector(0, 0, 800), GetEnumText(GetLocalRole()), this, FColor::White, DeltaTime);
-	// DrawDebugString(GetWorld(), FVector(0, 0, 900), GetEnumText(GetRemoteRole()), this, FColor::White, DeltaTime);
-	
+
 	if(ShowLightCylinder)
 	{
 		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(false);
@@ -81,12 +79,6 @@ void ABoat::Tick(float DeltaTime)
 	{
 		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(true);
 	}
-	
-	/*
-	if(GetPlayerState() != nullptr)
-	{
-		DrawDebugString(GetWorld(), FVector(0, 0, -50), "Player number " + FString::FromInt(GetPlayerState()->GetPlayerId()),this, FColor::White, DeltaTime);
-	}*/
 }
 
 // Called to bind functionality to input
@@ -150,16 +142,35 @@ void ABoat::Caught()
 {
 	assert(HasAuthority()); // this should be true
 
-	FVector CurrentActorPosition = GetActorLocation();
+	const FVector CurrentActorPosition = GetActorLocation();
 
 	MovementComponent->SetVelocity(FVector::ZeroVector);
 	AActor* FreeSpawn = GetWorld()->GetAuthGameMode()->FindPlayerStart(GetController());
+	// AActor* FreeSpawn = GetRandomPlayerStart();
 	if(!ensure(FreeSpawn)) return;
 	this->SetActorTransform(FreeSpawn->GetTransform());
 
 	if(GreedyGoblinsGameState->HasSailKey(GetPlayerState()))
 	{
 		GreedyGoblinsGameState->DropSailKeyAtLocation(CurrentActorPosition);
+	}
+}
+
+AActor* ABoat::GetRandomPlayerStart()
+{
+	TArray<AActor*> PlayerStarts;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), APlayerStart::StaticClass(), PlayerStarts);
+
+	while(true)
+	{
+		AActor* PlayerStart = PlayerStarts[FMath::RandRange(0, PlayerStarts.Num()-1)];
+		PlayerStart->SetActorEnableCollision(true);
+		TArray<AActor*> OverlappingActors;
+		PlayerStart->GetOverlappingActors(OverlappingActors);
+		if(OverlappingActors.Num() == 0)
+		{
+			return PlayerStart;
+		}
 	}
 }
 
