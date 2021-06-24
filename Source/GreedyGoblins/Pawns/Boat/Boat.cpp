@@ -43,7 +43,6 @@ void ABoat::BeginPlay()
 
 	if(HasAuthority()) // Executed only by the server (It's executed ON clients too, but not BY them: still by the server)
 	{
-		NetUpdateFrequency = 100;
 		BoxCollider->OnComponentHit.AddDynamic(this, &ABoat::OnBoatHit);
 		SetAutonomousProxy(false);
 	}

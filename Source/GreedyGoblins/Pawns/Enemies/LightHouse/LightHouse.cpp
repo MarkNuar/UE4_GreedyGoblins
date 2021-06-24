@@ -3,7 +3,6 @@
 
 #include "LightHouse.h"
 
-#include "DrawDebugHelpers.h"
 #include "Components/SphereComponent.h"
 #include "GreedyGoblins/Pawns/Boat/Boat.h"
 #include "Net/UnrealNetwork.h"
@@ -27,22 +26,18 @@ ALightHouse::ALightHouse()
 	if(!ensure(PatrolTargetTransform)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *PatrolTargetTransform->GetName());
 	PatrolTargetTransform->SetupAttachment(RootComponent);
 	
-	SpotLightComponent = CreateDefaultSubobject<USpotLightComponent>(TEXT("SpotLightComponent"));
-	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
-	SpotLightComponent->SetupAttachment(StaticMeshComponent);
-
+	EyeSocket = CreateDefaultSubobject<USceneComponent>(TEXT("EyeSocket"));
+	if(!ensure(EyeSocket)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *EyeSocket->GetName());
+	EyeSocket->SetupAttachment(RootComponent);
+	
 	LightConeMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LightConeMeshComponent"));
 	if(!ensure(LightConeMeshComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *LightConeMeshComponent->GetName());
-	LightConeMeshComponent->SetupAttachment(SpotLightComponent);
+	LightConeMeshComponent->SetupAttachment(EyeSocket);
 
-	// TODO: re-enable movement replication 
 	MovementReplicator = CreateDefaultSubobject<ULighthouseMovementReplicator>(TEXT("LightHouseMovementReplicator"));
 	if(!ensure(MovementReplicator != nullptr)) return;
 	MovementReplicator->SetIsReplicated(true);
 
-	EyeSocket = CreateDefaultSubobject<USceneComponent>(TEXT("EyeSocket"));
-	if(!ensure(EyeSocket)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *EyeSocket->GetName());
-	EyeSocket->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -54,7 +49,6 @@ void ALightHouse::BeginPlay()
 	
 	if(HasAuthority())
 	{
-		NetUpdateFrequency = 100;
 		LightConeMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ALightHouse::OnOverlapBegin);
 		LightConeMeshComponent->OnComponentEndOverlap.AddDynamic(this, &ALightHouse::OnOverlapEnd);	
 	}
@@ -66,10 +60,10 @@ void ALightHouse::BeginPlay()
 void ALightHouse::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(!ensure(SpotLightComponent)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *SpotLightComponent->GetName());
-	const FVector Direction = PatrolTargetTransform->GetComponentLocation() - SpotLightComponent->GetComponentLocation();
+	if(!ensure(EyeSocket)) UE_LOG(LogTemp, Warning, TEXT("%s not found"), *EyeSocket->GetName());
+	const FVector Direction = PatrolTargetTransform->GetComponentLocation() - EyeSocket->GetComponentLocation();
 	const FRotator Rotation = Direction.Rotation();
-	SpotLightComponent->SetWorldRotation(Rotation);
+	EyeSocket->SetWorldRotation(Rotation);
 }
 
 // Called to bind functionality to input

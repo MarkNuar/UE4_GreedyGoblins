@@ -10,7 +10,7 @@
 ASailKey::ASailKey()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	TriggerVolume = CreateDefaultSubobject<UBoxComponent>(FName("TriggerVolume"));
 	if (!ensure(TriggerVolume != nullptr)) return;
@@ -39,8 +39,8 @@ void ASailKey::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(GreedyGoblinsGameState->GetEnragedMode() && !HasAuthority())
-		this->Destroy();
+	// if(GreedyGoblinsGameState->GetEnragedMode() && !HasAuthority())
+	//	this->Destroy();
 }
 
 void ASailKey::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

@@ -3,13 +3,11 @@
 
 #include "PearlOfDestiny.h"
 
-#include "GreedyGoblins/GreedyGoblinsGameInstance.h"
-
 // Sets default values
 APearlOfDestiny::APearlOfDestiny()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	PearlTrigger= CreateDefaultSubobject<UBoxComponent>(FName("PearlTrigger"));
 	if (!ensure(PearlTrigger != nullptr)) return;
@@ -49,12 +47,6 @@ void APearlOfDestiny::BeginPlay()
 	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
 }
 
-// Called every frame
-void APearlOfDestiny::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
 
 void APearlOfDestiny::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
