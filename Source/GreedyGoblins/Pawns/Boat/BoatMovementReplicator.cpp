@@ -70,7 +70,6 @@ void UBoatMovementReplicator::ClientTick(float DeltaTime) // in order to smooth 
 	
 	InterpolateLocation(Spline, LerpRatio);
 	InterpolateVelocity(Spline, LerpRatio);
-	
 	InterpolateRotation(FMath::Clamp(LerpRatio, 0.0f, 1.0f));
 }
 

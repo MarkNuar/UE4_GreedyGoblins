@@ -71,6 +71,9 @@ void ABoat::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	//DrawDebugString(GetWorld(), FVector(0, 0, 600), "LocalRole " + GetEnumText(GetLocalRole()), this, FColor::Green, DeltaTime);
+	//DrawDebugString(GetWorld(), FVector(0, 0, 700), "RemoteRole " + GetEnumText(GetRemoteRole()),this, FColor::Green, DeltaTime);
+	
 	if(ShowLightCylinder)
 	{
 		PlayerWithSailKeyLightCylinderMesh->SetHiddenInGame(false);
