@@ -43,7 +43,7 @@ void UBoatMovementComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		SimulateMove(LastMove);
 	}
 
-	const FString LastMoveBool = LastMove.bIsInFastMode ? TEXT("true") : TEXT("false");
+	// const FString LastMoveBool = LastMove.bIsInFastMode ? TEXT("true") : TEXT("false");
 	// DrawDebugString(GetWorld(), FVector(0, 0, 200), "Move bIsInFastMode " + LastMoveBool,GetOwner(), FColor::Green, DeltaTime);
 	// DrawDebugString(GetWorld(), FVector(0, 0, 300), "Move throttle " + FString::SanitizeFloat(LastMove.Throttle),GetOwner(), FColor::Green, DeltaTime);
 	// DrawDebugString(GetWorld(), FVector(0, 0, 400), "Move steering " + FString::SanitizeFloat(LastMove.SteeringThrow),GetOwner(), FColor::Green, DeltaTime);

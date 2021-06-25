@@ -64,13 +64,14 @@ void UBoatMovementReplicator::ClientTick(float DeltaTime) // in order to smooth 
 
 	if (MovementComponent == nullptr) return;
 
-	float LerpRatio = ClientTimeSinceUpdate / ClientTimeBetweenLastUpdates;
+	const float LerpRatio = ClientTimeSinceUpdate / ClientTimeBetweenLastUpdates;
 
 	FHermiteCubicSpline Spline = CreateSpline();
 	
 	InterpolateLocation(Spline, LerpRatio);
 	InterpolateVelocity(Spline, LerpRatio);
-	InterpolateRotation(LerpRatio);
+	
+	InterpolateRotation(FMath::Clamp(LerpRatio, 0.0f, 1.0f));
 }
 
 FHermiteCubicSpline UBoatMovementReplicator::CreateSpline()
