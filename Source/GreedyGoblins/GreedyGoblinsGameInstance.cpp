@@ -10,6 +10,7 @@
 #include "OnlineSessionSettings.h"
 #include "GreedyGoblinMenus/EndGameMenu.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "Pawns/Boat/BoatController.h"
 
 const static FName SESSION_NAME = TEXT("Game");
 static FName SERVER_NAME_SETTINGS_KEY = TEXT("ServerName");
@@ -105,6 +106,14 @@ void UGreedyGoblinsGameInstance::LoadEndGameMenu()
 	EndGameMenu = CreateWidget<UEndGameMenu>(this,EndGameMenuClass); // instantiate the menu widget
 	if(!ensure(EndGameMenu!=nullptr)) return;
 	UE_LOG(LogTemp, Warning, TEXT("end game load menu"));
+
+	// TODO: MOVE ELSEWHERE, IN A MORE PROPER POSITION FOR END GAME CHECK
+	APlayerController* PlayerController = GetFirstLocalPlayerController(GetWorld());
+	if(!ensure(PlayerController)) return;
+	ABoatController* BoatController = Cast<ABoatController>(PlayerController);
+	if(!ensure(BoatController)) return;
+	BoatController->RemoveHUD();
+
 	// SETUP THE MENU (NO CURSOR, SHOW, ETC..)
 	EndGameMenu->Setup();
 	// SET THE MENU INTERFACE IN THE MAIN MENU

@@ -5,6 +5,7 @@
 
 #include <assert.h>
 
+#include "BoatController.h"
 #include "EngineUtils.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -47,6 +48,9 @@ void ABoat::BeginPlay()
 		BoxCollider->OnComponentHit.AddDynamic(this, &ABoat::OnBoatHit);
 		SetAutonomousProxy(false);
 	}
+
+	BoatController = Cast<ABoatController>(GetController());
+	if(!ensure(BoatController)) return;
 }
 
 FString GetEnumText (ENetRole Role)
@@ -116,6 +120,10 @@ void ABoat::ToggleFastMode()
 {
 	if (MovementComponent == nullptr) return;
 	MovementComponent->ToggleFastMode();
+	if(BoatController)
+	{
+		BoatController->ToggleFastMode(); // For UI changes
+	}
 }
 
 void ABoat::LookUp(float AxisValue)
