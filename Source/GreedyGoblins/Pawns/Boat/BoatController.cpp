@@ -11,7 +11,7 @@ void ABoatController::BeginPlay()
 {
 	Super::BeginPlay();
 
-    if(IsLocalController())
+    if(IsLocalPlayerController())
     {
     	HUD = CreateWidget<UBoatHUD>(this, HUDClass);
     	if(HUD)

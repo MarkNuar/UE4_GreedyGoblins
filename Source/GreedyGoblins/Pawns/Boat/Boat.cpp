@@ -49,8 +49,12 @@ void ABoat::BeginPlay()
 		SetAutonomousProxy(false);
 	}
 
-	BoatController = Cast<ABoatController>(GetController());
-	if(!ensure(BoatController)) return;
+	if(IsLocallyControlled())
+	{
+		BoatController = Cast<ABoatController>(GetController());
+		if(!ensure(BoatController)) return;
+	}
+	
 }
 
 FString GetEnumText (ENetRole Role)
