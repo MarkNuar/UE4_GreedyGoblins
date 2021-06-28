@@ -11,11 +11,14 @@ void ABoatController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	HUD = CreateWidget<UBoatHUD>(this, HUDClass);
-	if(HUD)
-	{
-		HUD->AddToViewport();
-	}
+    if(IsLocalController())
+    {
+    	HUD = CreateWidget<UBoatHUD>(this, HUDClass);
+    	if(HUD)
+    	{
+    		HUD->AddToViewport();
+    	}
+    }
 }
 
 void ABoatController::ToggleFastMode() const
