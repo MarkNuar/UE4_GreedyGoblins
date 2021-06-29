@@ -46,7 +46,10 @@ void ABoat::BeginPlay()
 	if(HasAuthority()) // Executed only by the server (It's executed ON clients too, but not BY them: still by the server)
 	{
 		BoxCollider->OnComponentHit.AddDynamic(this, &ABoat::OnBoatHit);
-		SetAutonomousProxy(false);
+		if(IsLocallyControlled())
+		{
+			SetAutonomousProxy(false);
+		}
 	}
 
 	if(IsLocallyControlled())
@@ -54,7 +57,6 @@ void ABoat::BeginPlay()
 		BoatController = Cast<ABoatController>(GetController());
 		if(!ensure(BoatController)) return;
 	}
-	
 }
 
 FString GetEnumText (ENetRole Role)
@@ -78,6 +80,9 @@ FString GetEnumText (ENetRole Role)
 void ABoat::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// DrawDebugString(GetWorld(), FVector(0, 0, 500), "Local Role: " + GetEnumText(GetLocalRole()),this, FColor::Green, DeltaTime);
+	// DrawDebugString(GetWorld(), FVector(0, 0, 600), "Remote Role: " + GetEnumText(GetRemoteRole()),this, FColor::Green, DeltaTime);
 
 	if(ShowLightCylinder)
 	{
@@ -126,7 +131,7 @@ void ABoat::ToggleFastMode()
 	MovementComponent->ToggleFastMode();
 	if(BoatController)
 	{
-		BoatController->ToggleFastMode(); // For UI changes
+		BoatController->ToggleFastMode(MovementComponent->IsInFastMode()); // For UI changes
 	}
 }
 

@@ -16,19 +16,20 @@ class GREEDYGOBLINS_API ABoatController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	void ToggleFastMode() const;
+	void ToggleFastMode(bool bIsInFastMode) const;
 
 	void RemoveHUD() const;
 
 protected:
 	virtual void BeginPlay() override;
-
-	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UUserWidget> HUDClass;
 
 	UPROPERTY()
 	UBoatHUD* HUD = nullptr;
+
 };

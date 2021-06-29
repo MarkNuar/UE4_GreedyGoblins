@@ -18,7 +18,7 @@ class GREEDYGOBLINS_API UBoatHUD : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void ToggleMode() const;
+	void ToggleMode(bool bIsInFastMode) const;
 	
 private:
 	

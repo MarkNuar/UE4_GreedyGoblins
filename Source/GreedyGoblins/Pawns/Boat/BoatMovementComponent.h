@@ -50,7 +50,6 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	
 	void SimulateMove(const FBoatMove& Move);
 	
-	
 	FVector GetVelocity() const { return Velocity; }
 	void SetVelocity(FVector Val) { Velocity = Val; }
 
@@ -62,8 +61,13 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* NoiseAreaCollider;
+
+	bool IsInFastMode() const
+	{
+		return bIsInFastMode;
+	}
 	
-	private:
+private:
 
 	void UpdateVelocity(const FBoatMove& Move);
 	void ApplyRotation(float DeltaTime, float SteeringThrow);
@@ -72,7 +76,7 @@ class GREEDYGOBLINS_API UBoatMovementComponent : public UActorComponent
 	void UpdateNoiseAreaRadius(bool bIsInFastMode) const;
 	
 	bool bIsInFastMode = false;
-	
+
 	UPROPERTY(EditAnywhere)
 	float Acceleration = 5;
 

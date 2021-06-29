@@ -6,10 +6,10 @@
 #include "Components/WidgetSwitcher.h"
 
 
-void UBoatHUD::ToggleMode() const
+void UBoatHUD::ToggleMode(bool bIsInFastMode) const
 {
 	if(!ensure(ImageSwitcher)) return;
-	if(ImageSwitcher->GetActiveWidgetIndex() == 0)
+	if(bIsInFastMode)
 	{
 		ImageSwitcher->SetActiveWidgetIndex(1);
 	}

@@ -31,11 +31,11 @@ void ABoatController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
-void ABoatController::ToggleFastMode() const
+void ABoatController::ToggleFastMode(bool bIsInFastMode) const
 {
 	if(HUD)
 	{
-		HUD->ToggleMode();
+		HUD->ToggleMode(bIsInFastMode);
 	}
 }
 

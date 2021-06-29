@@ -22,8 +22,10 @@ protected:
 	virtual AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 
 	virtual void Logout(AController* Exiting) override;
+
 private:
 	UPROPERTY()
 	TArray<AActor*> FreePlayerStarts;
+	
 };
 
