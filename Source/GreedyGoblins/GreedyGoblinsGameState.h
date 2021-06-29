@@ -42,6 +42,8 @@ public:
 	bool HasSailKey(APlayerState* PlayerState) const;
 	
 	void ShowEndScreen();
+
+	void HandlePlayerDisconnection(APlayerState* Exiting);
 	
 private:
 	FTimerHandle SailKeyTimerHandle;
@@ -77,6 +79,7 @@ private:
 
 	void SetEnragedModeToAllLighthouses();
 
+	FVector SailKeyRecoveryLocation;
 
 	UPROPERTY()
 	TArray<AActor*> LightHouses;

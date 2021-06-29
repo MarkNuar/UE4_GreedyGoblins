@@ -41,6 +41,7 @@ void APearlOfDestiny::BeginPlay()
 
 		const FVector Location = SailKeySpawnPoints[FMath::RandRange(0, SailKeySpawnPoints.Num()-1)]->GetActorLocation();
 		GetWorld()->SpawnActor<ASailKey>(SailKeyClass, Location, FRotator(0, 0, 0));
+		
 	}
 
 	GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());

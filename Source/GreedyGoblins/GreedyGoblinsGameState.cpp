@@ -36,6 +36,8 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSail
 		BoatWithSailKey->SetShowLightCylinder(true);
 		bIsInEnragedMode = true;
 
+		SailKeyRecoveryLocation = BoatWithSailKey->GetActorLocation(); // used for handling a player with sail key disconnection
+		
 		// if that somebody, stole it from someone else
 		if(OldPlayerWithSailKey != nullptr)
 		{
@@ -46,7 +48,6 @@ void AGreedyGoblinsGameState::UpdateSailKeyOwner(APlayerState* OldPlayerWithSail
 		}
 		else
 		{
-			// todo: set enrage mode true to all lighthouses
 			SetEnragedModeToAllLighthouses();
 		}
 	}
@@ -154,5 +155,20 @@ void AGreedyGoblinsGameState::ShowEndScreen()
 	UGreedyGoblinsGameInstance* GameInstance = Cast<UGreedyGoblinsGameInstance>(GetGameInstance());
 	if(!ensure(GameInstance)) return;
 	GameInstance->LoadEndGameMenu();
+}
+
+void AGreedyGoblinsGameState::HandlePlayerDisconnection(APlayerState* Exiting)
+{
+	if(PlayerWithSailKey == Exiting)
+	{
+		DropSailKeyAtLocation(SailKeyRecoveryLocation);
+		PlayerWithSailKey = nullptr;
+		bIsInEnragedMode = false;
+		SetEnragedModeToAllLighthouses();
+	}
+	else if (OldPlayerWithSailKey == Exiting)
+	{
+		OldPlayerWithSailKey = nullptr;
+	}
 }
 

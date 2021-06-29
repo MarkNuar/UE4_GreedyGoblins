@@ -3,6 +3,7 @@
 
 #include "GreedyGoblinsGameModeBase.h"
 
+#include "GameFramework/PlayerState.h"
 #include "GameFramework/PlayerStart.h"
 #include "GreedyGoblins/Actors/SailKey.h"
 #include "Kismet/GameplayStatics.h"
@@ -19,4 +20,17 @@ AActor* AGreedyGoblinsGameModeBase::ChoosePlayerStart_Implementation(AController
 	AActor* PlayerStart = FreePlayerStarts[Index];
 	FreePlayerStarts.RemoveAt(Index);
 	return PlayerStart;
+}
+
+void AGreedyGoblinsGameModeBase::Logout(AController* Exiting)
+{
+	Super::Logout(Exiting);
+	
+	AGreedyGoblinsGameState* GreedyGoblinsGameState = Cast<AGreedyGoblinsGameState>(GetWorld()->GetGameState());
+	if (!ensure(GreedyGoblinsGameState != nullptr)) return;
+
+	APlayerState* PlayerState = Exiting->GetPlayerState<APlayerState>();
+	if (!ensure(PlayerState != nullptr)) return;
+	
+	GreedyGoblinsGameState->HandlePlayerDisconnection(PlayerState);
 }

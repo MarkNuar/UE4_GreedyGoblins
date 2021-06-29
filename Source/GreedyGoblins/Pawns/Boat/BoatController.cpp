@@ -10,7 +10,7 @@
 void ABoatController::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
     if(IsLocalPlayerController())
     {
     	HUD = CreateWidget<UBoatHUD>(this, HUDClass);
@@ -19,6 +19,16 @@ void ABoatController::BeginPlay()
     		HUD->AddToViewport();
     	}
     }
+}
+
+void ABoatController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	Super::EndPlay(EndPlayReason);
+	
+	if(HUD)
+	{
+		HUD->RemoveFromViewport();
+	}
 }
 
 void ABoatController::ToggleFastMode() const
